@@ -1,13 +1,17 @@
-spring.datasource.url=jdbc:postgresql://localhost:5432/musicdiary_db
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.hibernate.ddl-auto=update
 
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/musicdiary_db
+
 spring.datasource.username=PostgreSQL
 spring.datasource.password=password
 
 
-spring.datasource.driver-class-name=org.postgresql.Driver
+jwt.secret=password
 
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+jwt.expiration=7200000
