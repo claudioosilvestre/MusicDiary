@@ -12,10 +12,12 @@ public class AuthServiceImpl implements AuthService {
 
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private JwtService jwtService;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
 
@@ -36,6 +38,6 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return null;
+        return jwtService.generateToken(user);
     }
 }
