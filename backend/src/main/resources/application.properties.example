@@ -15,3 +15,5 @@ spring.datasource.password=password
 jwt.secret=password
 
 jwt.expiration=7200000
+
+lastfm.api.key=a_tua_api_key
