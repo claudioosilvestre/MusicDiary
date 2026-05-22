@@ -1,6 +1,7 @@
 package com.musicdiary.controllers;
 
 import com.musicdiary.dtos.AuthResponseDTO;
+import com.musicdiary.dtos.LoginRequestDTO;
 import com.musicdiary.dtos.RegisterRequestDTO;
 import com.musicdiary.services.AuthService;
 import jakarta.validation.Valid;
@@ -32,4 +33,14 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(authResponseDTO);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+
+        String token = authService.login(loginRequestDTO);
+
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+        authResponseDTO.setToken(token);
+
+        return ResponseEntity.ok(authResponseDTO);
+    }
 }
