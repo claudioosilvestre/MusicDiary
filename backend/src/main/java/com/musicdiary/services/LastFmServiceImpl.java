@@ -66,6 +66,41 @@ public class LastFmServiceImpl implements LastFmService {
 
     @Override
     public List<TrackDTO> searchTracks(String trackName) {
-        return List.of();
+        String response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("method", "track.search")
+                        .queryParam("track", trackName)
+                        .queryParam("api_key", apiKey)
+                        .queryParam("format", "json")
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response);
+            JsonNode tracks = root.path("results").path("trackmatches").path("track");
+
+            List<TrackDTO> result = new ArrayList<>();
+            
+            
+            for (JsonNode trackNode : tracks) {
+                TrackDTO dto = new TrackDTO();
+                dto.setMusicName(trackNode.path("name").asText());
+                dto.setArtistName(trackNode.path("artist").asText());
+                dto.setTotalListeners(trackNode.path("listeners").asInt());
+
+                JsonNode images = trackNode.path("image");
+                String imageUrl = images.get(3).path("#text").asText();
+                dto.setImageURL(imageUrl);
+
+                result.add(dto);
+            }
+            return result;
+
+        }catch (Exception e) {
+            return List.of();
+        }
     }
 }
