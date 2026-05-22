@@ -1,6 +1,7 @@
 package com.musicdiary.controllers;
 
 import com.musicdiary.dtos.ArtistDTO;
+import com.musicdiary.dtos.TrackDTO;
 import com.musicdiary.services.LastFmService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,5 +27,13 @@ public class SearchController {
         List<ArtistDTO> artistDTOS = lastFmService.searchArtists(name);
 
         return ResponseEntity.ok(artistDTOS);
+    }
+
+    @GetMapping("/tracks")
+    public ResponseEntity<List<TrackDTO>> listTracks(@RequestParam String name) {
+
+        List<TrackDTO> trackDTOS = lastFmService.searchTracks(name);
+
+        return ResponseEntity.ok(trackDTOS);
     }
 }
