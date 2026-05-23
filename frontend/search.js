@@ -47,6 +47,8 @@ async function searchArtists(artist) {
         
         const listElements = document.createElement("ul");
 
+        document.getElementById("results").innerHTML = "";
+        
         artistSaved.forEach(item => {
             const listItems = document.createElement("li");
             listItems.textContent = item.name;
