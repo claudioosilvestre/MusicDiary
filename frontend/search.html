@@ -7,6 +7,15 @@
 </head>
 <body>
     <input type="text" id="searchInput" placeholder="Search artists or tracks...">
+    
+    <label for="searchType">Choose what to search:</label>
+    <select name="searchType" id="searchType">
+        <option value="artists">Artists</option>
+        <option value="tracks">Tracks</option>
+    </select>
+
+    <p>You Choose: <span id="result">None</span></p>
+
     <button id="searchButton">Search</button>
     <div id="results"></div>
 
