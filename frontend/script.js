@@ -38,8 +38,12 @@ async function userLogin(userName, passWord) {
         if(!response.ok) {
             throw new Error(`Server error: ${response.status}`);
         }
-
+        
         const userSaved = await response.json();
+
+        localStorage.setItem("token", userSaved.token);
+        window.location.href = "search.html"
+        
         return userSaved;
     } catch (error) {
         console.error("Failed sending POST:", error)
