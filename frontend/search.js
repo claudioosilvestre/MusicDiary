@@ -45,18 +45,28 @@ async function searchArtists(artist) {
         
         const artistSaved = await response.json();
         
-        const listElements = document.createElement("ul");
 
         document.getElementById("results").innerHTML = "";
         
         artistSaved.forEach(item => {
-            const listItems = document.createElement("li");
-            listItems.textContent = item.name;
+            const artistCard = document.createElement("div");
+            
+            const artistImage = document.createElement("img");
+            artistImage.src = item.imageURL;
 
-            listElements.appendChild(listItems);
+            const artistName = document.createElement("h3");
+            artistName.textContent = item.name;
+
+            const listenners = document.createElement("p");
+            listenners.textContent = item.totalListeners;
+            
+            artistCard.appendChild(artistImage);
+            artistCard.appendChild(artistName);
+            artistCard.appendChild(listenners);
+
+            document.getElementById("results").appendChild(artistCard);
+            
         });
-
-        document.getElementById("results").appendChild(listElements);
 
         return artistSaved;
     } catch (error) {
@@ -66,7 +76,42 @@ async function searchArtists(artist) {
 
 
 async function searchTracks(track) {
-    const url = "http://localhost:8080/search/tracks"
+    const url = `http://localhost:8080/search/tracks?name=${track}`;
 
+    try{
 
+        const response = await fetch(url);
+
+        if(!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const tracksSaved = await response.json();
+
+        document.getElementById("results").innerHTML = "";
+
+        tracksSaved.forEach(item => {
+            const tracksCard = document.createElement("div");
+
+            const trackImage = document.createElement("img");
+            trackImage.src = item.imageURL;
+
+            const trackName = document.createElement("h3");
+            trackName.textContent = item.musicName;
+
+            const listenners = document.createElement("p");
+            listenners.textContent = item.totalListeners;
+
+            tracksCard.appendChild(trackImage);
+            tracksCard.appendChild(trackName);
+            tracksCard.appendChild(listenners);
+
+            document.getElementById("results").appendChild(tracksCard);
+        })
+
+        return tracksSaved;
+
+    } catch(error) {
+        console.error("Failed sendind POST:", error)
+    }
 }
