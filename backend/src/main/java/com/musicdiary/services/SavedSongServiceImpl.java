@@ -1,0 +1,86 @@
+package com.musicdiary.services;
+
+import com.musicdiary.converters.SavedSongConverter;
+import com.musicdiary.dtos.SaveSongRequestDTO;
+import com.musicdiary.dtos.SaveSongResponseDTO;
+import com.musicdiary.exceptions.SongNotFoundException;
+import com.musicdiary.models.SavedSong;
+import com.musicdiary.models.Song;
+import com.musicdiary.models.User;
+import com.musicdiary.repositories.SavedSongRepository;
+import com.musicdiary.repositories.SongRepository;
+import com.musicdiary.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class SavedSongServiceImpl implements SavedSongService {
+
+    private UserRepository userRepository;
+    private SongRepository songRepository;
+    private SavedSongRepository savedSongRepository;
+
+    public SavedSongServiceImpl(UserRepository userRepository, SongRepository songRepository, SavedSongRepository savedSongRepository) {
+        this.userRepository = userRepository;
+        this.songRepository = songRepository;
+        this.savedSongRepository = savedSongRepository;
+    }
+
+    @Override
+    public List<SaveSongResponseDTO> listSavedSongs() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<SavedSong> savedSongList = savedSongRepository.findByUser(user);
+
+        List<SaveSongResponseDTO> saveSongResponse = savedSongList.stream()
+                .map(song -> SavedSongConverter.toResponseDTO(song))
+                .collect(Collectors.toList());
+
+        return saveSongResponse;
+    }
+
+    @Override
+    public SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Song song = songRepository.findByTitleAndArtistName(saveSongRequestDTO.getTitle(), saveSongRequestDTO.getArtistName())
+                .orElseGet(() -> createSong(saveSongRequestDTO));
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        savedSongRepository.save(savedSong);
+
+        return SavedSongConverter.toResponseDTO(savedSong);
+
+    }
+
+    public Song createSong(SaveSongRequestDTO saveSongRequestDTO) {
+        Song song = new Song();
+
+        song.setArtistName(saveSongRequestDTO.getArtistName());
+        song.setTitle(saveSongRequestDTO.getTitle());
+        song.setImageUrl(saveSongRequestDTO.getImageUrl());
+        song.setLastFmUrl(saveSongRequestDTO.getLastFmUrl());
+
+        songRepository.save(song);
+
+        return song;
+    }
+}
