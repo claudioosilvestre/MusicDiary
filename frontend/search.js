@@ -50,22 +50,17 @@ async function searchArtists(artist) {
         
         artistSaved.forEach(item => {
             const artistCard = document.createElement("div");
-            
-            const artistImage = document.createElement("img");
-            artistImage.src = item.imageURL;
-
-            const artistName = document.createElement("h3");
-            artistName.textContent = item.name;
-
-            const listenners = document.createElement("p");
-            listenners.textContent = item.totalListeners;
-            
-            artistCard.appendChild(artistImage);
-            artistCard.appendChild(artistName);
-            artistCard.appendChild(listenners);
-
-            document.getElementById("results").appendChild(artistCard);
-            
+            artistCard.className = "col-md-3 mb-4";
+            artistCard.innerHTML = `
+            <div class="card h-100">
+            <img src="${item.imageURL}" class="card-img-top" onerror="this.src='https://via.placeholder.com/150'">
+                <div class="card-body">
+                    <h5 class="card-title">${item.name}</h5>
+                    <p class="card-text text-muted">${item.totalListeners.toLocaleString()} listeners</p>
+                </div>
+            </div>
+            `;
+        document.getElementById("results").appendChild(artistCard);
         });
 
         return artistSaved;
@@ -93,18 +88,17 @@ async function searchTracks(track) {
         tracksSaved.forEach(item => {
             const tracksCard = document.createElement("div");
 
-            const trackImage = document.createElement("img");
-            trackImage.src = item.imageURL;
-
-            const trackName = document.createElement("h3");
-            trackName.textContent = item.musicName;
-
-            const listenners = document.createElement("p");
-            listenners.textContent = item.totalListeners;
-
-            tracksCard.appendChild(trackImage);
-            tracksCard.appendChild(trackName);
-            tracksCard.appendChild(listenners);
+            tracksCard.className = "col-md-3 mb-4";
+            tracksCard.innerHTML = `
+            <div class="card h-100">
+            <img src="${item.imageURL}" class="card-img-top" onerror="this.src='https://via.placeholder.com/150'">
+                <div class="card-body">
+                    <h5 class="card-title">${item.musicName}</h5>
+                    <h5 class="artist-title">${item.artistName}</h5>
+                    <p class="card-text text-muted">${item.totalListeners.toLocaleString()} listeners</p>
+                </div>
+            </div>
+            `;
 
             document.getElementById("results").appendChild(tracksCard);
         })
