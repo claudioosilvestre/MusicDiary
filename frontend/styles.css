@@ -52,3 +52,102 @@
     display: block;
     margin-bottom: 0.5rem;
 }
+
+/* Pages internas */
+.main-page {
+    background: #0f0f1a;
+    min-height: 100vh;
+    color: white;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar-brand {
+    color: #6c63ff !important;
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.8) !important;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #6c63ff !important;
+}
+
+/* Cards */
+.card {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 12px !important;
+    color: white !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(108,99,255,0.3) !important;
+}
+
+.card-title {
+    color: white !important;
+}
+
+.card-text {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+/* Search inputs */
+.form-control, .form-select {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: white !important;
+    border-radius: 8px !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255,255,255,0.4) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: #6c63ff !important;
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.2) !important;
+    color: white !important;
+}
+
+/* Botão search */
+.btn-primary {
+    background: #6c63ff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 24px !important;
+    transition: background 0.3s !important;
+}
+
+.btn-primary:hover {
+    background: #5a52d5 !important;
+}
+
+.login-card .form-control {
+    background: white !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+}
+
+.login-card .form-control {
+    background: white !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+}
+
+.login-card .form-control::placeholder {
+    color: #999 !important;
+}
