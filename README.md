@@ -1,6 +1,7 @@
 # MusicDiary 
 
 **MusicDiary** is a full-stack music discovery and journaling platform where users can search for artists and tracks, save their favorites, and build a personal music history. The application integrates with the Last.fm API to provide rich music data, and features a secure authentication system with JWT tokens.
+
 This project was developed as a portfolio project following the completion of a 26-week Software Engineering intensive program at Code for All_, consolidating skills in full-stack architecture, REST API integration, and security.
 
 ## Tech Stack
