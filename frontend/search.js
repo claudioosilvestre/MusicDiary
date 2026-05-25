@@ -128,6 +128,34 @@ async function searchTracks(track) {
             </div>
             `;
 
+            const addFavTrackBtn = document.createElement("button");
+            addFavTrackBtn.textContent = "Add to Favorites";
+            addFavTrackBtn.className = "btn btn-primary mt-2";;
+
+            addFavTrackBtn.addEventListener("click", async function() {
+                const token = localStorage.getItem("token");
+
+                const response = await fetch("URL_DO_BACKEND/saved-songs", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        title: item.musicName,
+                        artistName: item.artistName,
+                        imageURL: item.imageURL,
+                        lastFmUrl: ""
+                    })
+                });
+                if(response.ok) {
+                    alert("Saved!");
+                }
+            });
+
+            const cardBody = tracksCard.querySelector(".card-body");
+            cardBody.appendChild(addFavTrackBtn);
+
             document.getElementById("results").appendChild(tracksCard);
         })
 
