@@ -33,6 +33,7 @@ searchBtn.addEventListener("click", function() {
 })
 
 
+
 async function searchArtists(artist) {
     const url = `http://localhost:8080/search/artists?name=${artist}`;
 
@@ -60,6 +61,33 @@ async function searchArtists(artist) {
                 </div>
             </div>
             `;
+            const addFavBtn = document.createElement("button");
+            addFavBtn.textContent = "Add to Favorites";
+            addFavBtn.className = "btn btn-primary mt-2";
+            addFavBtn.addEventListener("click", async function() {
+                const token = localStorage.getItem("token");
+
+                const response = await fetch("URL_DO_BACKEND/saved-songs", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        title: item.name,
+                        artistName: item.name,
+                        imageUrl: item.imageURL,
+                        lastFmUrl: item.profileURL
+                    })
+            });
+            if(response.ok) {
+                alert("Saved!");
+            }
+        });
+
+            const cardBody = artistCard.querySelector(".card-body");
+            cardBody.appendChild(addFavBtn);
+            
         document.getElementById("results").appendChild(artistCard);
         });
 
@@ -72,7 +100,7 @@ async function searchArtists(artist) {
 
 async function searchTracks(track) {
     const url = `http://localhost:8080/search/tracks?name=${track}`;
-
+    
     try{
 
         const response = await fetch(url);
