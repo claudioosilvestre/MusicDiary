@@ -46,6 +46,9 @@ async function userLogin(userName, passWord) {
         
         return userSaved;
     } catch (error) {
+        const errorMsg = document.querySelector("#error-credentials");
+        errorMsg.style.display = "block";
+
         console.error("Failed sending POST:", error)
     }
 }
