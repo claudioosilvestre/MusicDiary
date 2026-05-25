@@ -2,8 +2,6 @@ const searchInput = document.getElementById("searchInput");
 
 const searchBtn = document.getElementById("searchButton");
 
-
-
 const dropdown = document.getElementById("searchType");
 const result = document.getElementById("result");
 
@@ -165,3 +163,8 @@ async function searchTracks(track) {
         console.error("Failed sendind POST:", error)
     }
 }
+
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+});

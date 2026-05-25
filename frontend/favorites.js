@@ -1,5 +1,10 @@
 listFavorites();
 
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+});
+
 async function listFavorites() {
     const url = "http://localhost:8080/saved-songs"
     
