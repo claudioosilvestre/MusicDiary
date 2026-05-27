@@ -4,6 +4,11 @@
 
 This project was developed as a portfolio project following the completion of a 26-week Software Engineering intensive program at Code for All_, consolidating skills in full-stack architecture, REST API integration, and security.
 
+## Known Limitations
+
+- **Artist Images:** The Last.fm API removed artist image support in 2019 due to copyright restrictions. 
+  Images are unavailable for artists; placeholder images are shown instead. 
+
 ## Tech Stack
 
 - **Backend:** Java 21, Spring Boot, Spring Data JPA, Hibernate, Spring Security, REST APIs
