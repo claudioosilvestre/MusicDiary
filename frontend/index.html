@@ -9,6 +9,7 @@
 </head>
 
 <body class="login-page">
+    <canvas id="particles"></canvas>
     <div class="login-container">
         <h1 class="app-title">MusicDiary 🎵</h1>
         <div class="login-card">
@@ -22,5 +23,42 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const particles = [];
+const notes = ['♪', '♫', '♬', '♩'];
+
+for(let i = 0; i < 40; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 20 + 10,
+        speed: Math.random() * 0.5 + 0.2,
+        note: notes[Math.floor(Math.random() * notes.length)],
+        opacity: Math.random() * 0.3 + 0.1
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        ctx.font = `${p.size}px Arial`;
+        ctx.fillStyle = `rgba(108, 99, 255, ${p.opacity})`;
+        ctx.fillText(p.note, p.x, p.y);
+        p.y -= p.speed;
+        if(p.y < -30) {
+            p.y = canvas.height + 30;
+            p.x = Math.random() * canvas.width;
+        }
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+</script>
 </body>
 </html>
