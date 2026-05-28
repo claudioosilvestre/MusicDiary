@@ -10,7 +10,7 @@
 <body class="main-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MusicDiary</a>
+            <a class="navbar-brand" href="#">MusicDiary 🎵</a>
             <div class="navbar-nav">
                 <a class="nav-link" href="search.html">Search</a>
                 <a class="nav-link" href="favorites.html">Favorites</a>
@@ -19,10 +19,80 @@
         </div>
     </nav>
 
-    <h1>Favorites</h1>
+    <div class="container mt-4 text-center">
+        <h1 class="hero-title">Your Music Collection 🎵</h1>
+    </div>
 
-    <div id="favorites" class="row mt-4"></div>
-    
+    <div id="favorites" class="row mt-4 container mx-auto"></div>
+
     <script src="favorites.js"></script>
+
+    <canvas id="constellation"></canvas>
+
+<script>
+const canvas = document.getElementById('constellation');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const stars = [];
+const starCount = 80;
+
+for(let i = 0; i < starCount; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        opacity: Math.random() * 0.5 + 0.3
+    });
+}
+
+function drawStars() {
+    stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(108, 99, 255, ${star.opacity})`;
+        ctx.fill();
+    });
+}
+
+function drawLines() {
+    stars.forEach((star, i) => {
+        stars.slice(i + 1).forEach(other => {
+            const dist = Math.hypot(star.x - other.x, star.y - other.y);
+            if(dist < 120) {
+                ctx.beginPath();
+                ctx.moveTo(star.x, star.y);
+                ctx.lineTo(other.x, other.y);
+                ctx.strokeStyle = `rgba(108, 99, 255, ${0.15 * (1 - dist/120)})`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+            }
+        });
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(star => {
+        star.x += star.speedX;
+        star.y += star.speedY;
+        if(star.x < 0 || star.x > canvas.width) star.speedX *= -1;
+        if(star.y < 0 || star.y > canvas.height) star.speedY *= -1;
+    });
+    drawLines();
+    drawStars();
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
 </body>
 </html>
