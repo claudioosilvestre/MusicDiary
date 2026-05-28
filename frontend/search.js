@@ -7,8 +7,6 @@ const result = document.getElementById("result");
 
     dropdown.addEventListener("change", function() {
         const selectedValue = dropdown.value;
-        
-        result.textContent = selectedValue;
     })
 
 

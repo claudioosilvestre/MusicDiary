@@ -10,7 +10,7 @@
 <body class="main-page">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MusicDiary</a>
+            <a class="navbar-brand" href="#">MusicDiary 🎵</a>
             <div class="navbar-nav">
                 <a class="nav-link" href="search.html">Search</a>
                 <a class="nav-link" href="favorites.html">Favorites</a>
@@ -18,17 +18,67 @@
             </div>
         </div>
     </nav>
-
+    
     <div class="container mt-5">
-        <h1 class="mb-4">MusicDiary 🎵</h1>
-        <input type="text" id="searchInput" class="form-control" placeholder="Search artists or tracks...">
-        <select id="searchType" class="form-select mt-2">
-            <option value="artists">Artists</option>
-            <option value="tracks">Tracks</option>
-        </select>
-        <button id="searchButton" class="btn btn-primary mt-2">Search</button>
+        <div class="search-hero text-center mb-5">
+            <h1 class="hero-title">Discover Your Next Favorite Song 🎵</h1>
+            <p class="hero-subtitle">Search millions of artists and tracks</p>
+        </div>
+        <div class="search-bar-container">
+            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search artists or tracks...">
+            <select id="searchType" class="form-select mt-2">
+                <option value="artists">Artists</option>
+                <option value="tracks">Tracks</option>
+            </select>
+            <button id="searchButton" class="btn btn-primary mt-2 w-100">Search</button>
+        </div>
         <div id="results" class="row mt-4"></div>
     </div>
     <script src="search.js"></script>
+
+    <canvas id="equalizer"></canvas>
+
+<script>
+
+const canvas = document.getElementById('equalizer');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const bars = [];
+const barCount = 60;
+
+for(let i = 0; i < barCount; i++) {
+    bars.push({
+        x: (canvas.width / barCount) * i,
+        height: Math.random() * 100 + 20,
+        speed: Math.random() * 2 + 1,
+        direction: 1
+    });
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    bars.forEach((bar, i) => {
+        bar.height += bar.speed * bar.direction;
+        if(bar.height > 120 || bar.height < 20) bar.direction *= -1;
+        
+        const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - bar.height);
+        gradient.addColorStop(0, 'rgba(108, 99, 255, 0.6)');
+        gradient.addColorStop(1, 'rgba(108, 99, 255, 0.05)');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(bar.x, canvas.height - bar.height, (canvas.width / barCount) - 2, bar.height);
+    });
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
 </body>
 </html>
