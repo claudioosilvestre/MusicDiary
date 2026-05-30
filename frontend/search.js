@@ -50,7 +50,7 @@ async function searchArtists(artist) {
             artistCard.className = "col-md-3 mb-4";
             artistCard.innerHTML = `
             <div class="card h-100">
-            <img src="${item.imageURL}" class="card-img-top" onerror="this.src='https://via.placeholder.com/150'">
+            <img src="${item.imageURL}" class="card-img-top" onerror="this.src='https://placehold.co/300x300/1a1a2e/6c63ff?text=🎵'">
                 <div class="card-body">
                     <h5 class="card-title">${item.name}</h5>
                     <p class="card-text text-muted">${item.totalListeners.toLocaleString()} listeners</p>
@@ -63,7 +63,7 @@ async function searchArtists(artist) {
             addFavBtn.addEventListener("click", async function() {
                 const token = localStorage.getItem("token");
 
-                const response = await fetch("URL_DO_BACKEND/saved-songs", {
+                const response = await fetch("http://localhost:8080/saved-songs", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ async function searchTracks(track) {
             tracksCard.className = "col-md-3 mb-4";
             tracksCard.innerHTML = `
             <div class="card h-100">
-            <img src="${item.imageURL}" class="card-img-top" onerror="this.src='https://via.placeholder.com/150'">
+            <img src="${item.imageURL}" class="card-img-top" onerror="this.src='https://placehold.co/300x300/1a1a2e/6c63ff?text=🎵'">
                 <div class="card-body">
                     <h5 class="card-title">${item.musicName}</h5>
                     <h5 class="artist-title">${item.artistName}</h5>
@@ -131,7 +131,7 @@ async function searchTracks(track) {
             addFavTrackBtn.addEventListener("click", async function() {
                 const token = localStorage.getItem("token");
 
-                const response = await fetch("URL_DO_BACKEND/saved-songs", {
+                const response = await fetch("http://localhost:8080/saved-songs", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
