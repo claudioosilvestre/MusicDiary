@@ -3,6 +3,8 @@ package com.musicdiary.services;
 import com.musicdiary.converters.SavedSongConverter;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
+import com.musicdiary.exceptions.InvalidUserException;
+import com.musicdiary.exceptions.SavedSongNotFoundException;
 import com.musicdiary.exceptions.SongNotFoundException;
 import com.musicdiary.models.SavedSong;
 import com.musicdiary.models.Song;
@@ -69,6 +71,26 @@ public class SavedSongServiceImpl implements SavedSongService {
 
         return SavedSongConverter.toResponseDTO(savedSong);
 
+    }
+
+    @Override
+    public void deleteSong(Long id) {
+        if(id <= 0) {
+            throw new IllegalArgumentException("Id must be positive");
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        SavedSong savedSong = savedSongRepository.findById(id)
+                .orElseThrow(()-> new SavedSongNotFoundException());
+
+        if(!user.equals(savedSong.getUser())) {
+            throw new InvalidUserException();
+        }
+        savedSongRepository.delete(savedSong);
     }
 
     public Song createSong(SaveSongRequestDTO saveSongRequestDTO) {

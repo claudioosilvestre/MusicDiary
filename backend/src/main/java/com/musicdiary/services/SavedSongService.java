@@ -11,4 +11,6 @@ public interface SavedSongService {
 
     SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO);
 
+    void deleteSong(Long id);
+
 }

@@ -6,7 +6,6 @@ import com.musicdiary.services.SavedSongService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,5 +34,13 @@ public class SavedSongController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saveSongResponseDTO);
 
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSong(@PathVariable Long id) {
+
+        savedSongService.deleteSong(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
