@@ -227,14 +227,6 @@ public class SavedSongServiceImplTest {
         user.setEmail("test@email.com");
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
 
-        Song song = new Song();
-        song.setTitle("test");
-        song.setArtistName("testArtist");
-
-        SavedSong savedSong = new SavedSong();
-        savedSong.setId(9L);
-        savedSong.setUser(user);
-        savedSong.setSong(song);
         when(savedSongRepository.findById(1L)).thenReturn(Optional.empty());
 
         SavedSongNotFoundException exception = assertThrows(
