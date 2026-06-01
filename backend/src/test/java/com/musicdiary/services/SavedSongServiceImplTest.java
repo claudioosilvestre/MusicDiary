@@ -184,4 +184,33 @@ public class SavedSongServiceImplTest {
         assertEquals("test", songResponseDTO.getTitle());
         assertEquals("testArtist", songResponseDTO.getArtistName());
     }
+
+    @Test
+    void deleteSong_shouldDeleteSong_withValidId() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+
+        Song song = new Song();
+        song.setTitle("Test");
+        song.setArtistName("TestArtist");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setId(1L);
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        when(savedSongRepository.findById(1L)).thenReturn(Optional.of(savedSong));
+
+        savedSongServiceImpl.deleteSong(1L);
+
+        verify(savedSongRepository, times(1)).delete(savedSong);
+    }
 }
