@@ -146,4 +146,42 @@ public class SavedSongServiceImplTest {
         assertEquals("Test", songResponseDTO.getTitle());
         assertEquals("TestArtist", songResponseDTO.getArtistName());
     }
+
+    @Test
+    void saveSong_shouldCreateNewSong_whenSongNotFoundInDatabase () {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+
+        SaveSongRequestDTO saveSongRequestDTO = new SaveSongRequestDTO();
+        saveSongRequestDTO.setTitle("test");
+        saveSongRequestDTO.setArtistName("testArtist");
+
+        when(songRepository.findByTitleAndArtistName("test", "testArtist"))
+                .thenReturn(Optional.empty());
+
+        Song song = new Song();
+        song.setTitle("test");
+        song.setArtistName("testArtist");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        when(savedSongRepository.save(any(SavedSong.class))).thenReturn(savedSong);
+
+
+        SaveSongResponseDTO songResponseDTO = savedSongServiceImpl.saveSong(saveSongRequestDTO);
+
+        assertNotNull(songResponseDTO);
+        assertEquals("test", songResponseDTO.getTitle());
+        assertEquals("testArtist", songResponseDTO.getArtistName());
+    }
 }
