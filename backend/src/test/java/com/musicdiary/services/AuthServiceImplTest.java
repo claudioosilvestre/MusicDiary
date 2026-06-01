@@ -60,4 +60,21 @@ public class AuthServiceImplTest {
         assertEquals("fake-jwt-token", string);
     }
 
+    @Test
+    void registerWithEmailAlreadyRegistered_shouldThrowException() {
+        RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO();
+        registerRequestDTO.setEmail("test@mail.com");
+
+        User user = new User();
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+
+        UserEmailAlreadyExistsException exception = assertThrows(
+                UserEmailAlreadyExistsException.class,
+                () -> authService.register(registerRequestDTO));
+
+        assertEquals("Email already exists", exception.getMessage());
+
+    }
+
 }
