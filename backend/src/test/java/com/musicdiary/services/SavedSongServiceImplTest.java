@@ -213,4 +213,36 @@ public class SavedSongServiceImplTest {
 
         verify(savedSongRepository, times(1)).delete(savedSong);
     }
+
+    @Test
+    void deleteSong_shouldThrowException_withInvalidId () {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+
+        Song song = new Song();
+        song.setTitle("test");
+        song.setArtistName("testArtist");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setId(9L);
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+        when(savedSongRepository.findById(1L)).thenReturn(Optional.empty());
+
+        SavedSongNotFoundException exception = assertThrows(
+                SavedSongNotFoundException.class,
+                () -> savedSongServiceImpl.deleteSong(1L));
+
+        assertEquals("Saved song not found", exception.getMessage());
+
+        verify(savedSongRepository).findById(1L);
+    }
 }
