@@ -1,0 +1,41 @@
+package com.musicdiary.services;
+
+import com.musicdiary.models.User;
+import com.musicdiary.repositories.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+
+@ExtendWith(MockitoExtension.class)
+public class UserDetailsServiceImplTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Test
+    void loadUserByUsername_withValidData_shouldReturnUserDetails() {
+
+        User user = new User();
+        user.setEmail("test@email.com");
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername("test@email.com");
+
+        assertNotNull(userDetails);
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        assertEquals("test@email.com", userDetails.getUsername());
+    }
+}
