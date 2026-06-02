@@ -121,4 +121,27 @@ public class AuthServiceImplTest {
         verifyNoInteractions(jwtService);
         assertEquals("Email not found", exception.getMessage());
     }
+
+    @Test
+    void loginWithInvalidPassword_shouldThrowException() {
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        loginRequestDTO.setEmail("test@mail.com");
+        loginRequestDTO.setPassword("123456789");
+
+        User user = new User();
+        user.setPasswordHash("hashedPassword123");
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+
+        when(passwordEncoder.matches(anyString(), anyString()))
+                .thenReturn(false);
+
+        PasswordDoesNotMatchException exception = assertThrows(
+                PasswordDoesNotMatchException.class,
+                () -> authService.login(loginRequestDTO));
+
+        verify(userRepository).findByEmail("test@mail.com");
+        verifyNoInteractions(jwtService);
+        assertEquals("Password does not match", exception.getMessage());
+    }
 }
