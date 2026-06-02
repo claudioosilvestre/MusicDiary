@@ -38,4 +38,17 @@ public class UserDetailsServiceImplTest {
         verify(userRepository, times(1)).findByEmail("test@email.com");
         assertEquals("test@email.com", userDetails.getUsername());
     }
+    
+     @Test
+    void loadUserByUsername_withInvalidData_shouldThrowException() {
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.empty());
+
+        UsernameNotFoundException exception = assertThrows(
+                UsernameNotFoundException.class,
+                () -> userDetailsService.loadUserByUsername("test@email.com"));
+
+        verify(userRepository).findByEmail("test@email.com");
+        assertEquals("User not found: test@email.com", exception.getMessage());
+    }
 }
