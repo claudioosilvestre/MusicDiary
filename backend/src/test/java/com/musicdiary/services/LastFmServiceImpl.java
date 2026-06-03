@@ -60,4 +60,20 @@ public class LastFmServiceImplTest {
         assertNotNull(artistDTOList);
         assertEquals("Radiohead", artistDTOList.get(0).getName());
     }
+
+    @Test
+    void searchArtistWithInvalidData_shouldReturnEmptyList() {
+
+        String fakeJson = "{}";
+
+        when(webClient.get()).thenReturn(requestHeadersUriSpec);
+        when(requestHeadersUriSpec.uri(any(Function.class))).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just(fakeJson));
+
+        List<ArtistDTO> artistDTOList = lastFmService.searchArtists("test");
+
+        assertNotNull(artistDTOList);
+        assertEquals(0, artistDTOList.size());
+    }
 }
