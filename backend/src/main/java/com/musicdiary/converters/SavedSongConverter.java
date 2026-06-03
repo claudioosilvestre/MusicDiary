@@ -3,6 +3,7 @@ package com.musicdiary.converters;
 import com.musicdiary.dtos.SaveSongResponseDTO;
 import com.musicdiary.models.SavedSong;
 
+@Component
 public class SavedSongConverter {
 
 
@@ -16,7 +17,7 @@ public class SavedSongConverter {
         saveSongResponseDTO.setLastFmUrl(savedSong.getSong().getLastFmUrl());
         saveSongResponseDTO.setCreatedAt(savedSong.getCreatedAt());
         saveSongResponseDTO.setNote(savedSong.getNote());
-        
+
         return saveSongResponseDTO;
     }
 }

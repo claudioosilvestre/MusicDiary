@@ -1,5 +1,7 @@
 listFavorites();
 
+let selectedSavedSongId = null;
+
 document.getElementById("logoutBtn").addEventListener("click", function() {
     localStorage.removeItem("token");
     window.location.href = "index.html";
@@ -35,9 +37,28 @@ async function listFavorites() {
                 <div class="card-body">
                     <h5 class="card-title">${item.title}</h5>
                     <h4 class="card-artist">${item.artistName}</h4>
+                    <p class="card-note">${item.note ? item.note : 'No note added'}</p>
                 </div>
             </div>
             `;
+            
+            const viewNote = document.createElement("button");
+            viewNote.textContent="View Note";
+            viewNote.className="btn btn-primary";
+            viewNote.addEventListener("click", async function() {
+
+                selectedSavedSongId = item.id;
+
+                document.getElementById("noteInput").value = item.note || "";
+                
+                const noteModalElement = document.getElementById("modalNote");
+                const modalNote = new bootstrap.Modal(noteModalElement);
+
+                modalNote.show();
+            })
+
+            artistCard.querySelector(".card-body").appendChild(viewNote);
+
             const deleteFavBtn = document.createElement("button");
             deleteFavBtn.textContent="Delete";
             deleteFavBtn.className="btn btn-danger mt-2";
@@ -67,3 +88,26 @@ async function listFavorites() {
         console.error("Error loading favorites:", error);
     }
 }
+
+document.getElementById("saveNote-btn").addEventListener("click", async function() {
+    const token = localStorage.getItem("token");
+    const newNote = document.getElementById("noteInput").value;
+
+    const response = await fetch(`http://localhost:8080/saved-songs/${selectedSavedSongId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            note: newNote
+        })
+    });
+
+    if(response.ok) {
+        bootstrap.Modal.getInstance(document.getElementById("modalNote")).hide();
+        listFavorites();
+    } else {
+        alert("Error updating note");
+    }
+});

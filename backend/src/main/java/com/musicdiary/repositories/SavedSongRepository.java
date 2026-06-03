@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface SavedSongRepository extends JpaRepository<SavedSong, Long> {
 
-    List<SavedSong> findByUser(User user);
+    List<SavedSong> findByUserOrderByCreatedAtDesc(User user);
 }

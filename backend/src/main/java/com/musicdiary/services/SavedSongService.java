@@ -1,5 +1,6 @@
 package com.musicdiary.services;
 
+import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
 
@@ -10,6 +11,8 @@ public interface SavedSongService {
     List<SaveSongResponseDTO> listSavedSongs();
 
     SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO);
+
+    SaveSongResponseDTO editNote(Long id, EditNoteRequestDTO editNoteRequestDTO);
 
     void deleteSong(Long id);
 

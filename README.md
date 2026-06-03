@@ -94,7 +94,6 @@ Open `frontend/index.html` with Live Server or your preferred method.
 ## Future Improvements
 
 - Unit and integration tests for Controller layers
-- Add notes to saved songs (personal diary feature)
 - Music statistics and listening insights dashboard
 - Playlist creation and management
 - OAuth2 login with Spotify

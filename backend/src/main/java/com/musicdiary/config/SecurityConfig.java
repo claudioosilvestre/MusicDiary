@@ -55,7 +55,7 @@ public class SecurityConfig {
             CorsConfiguration configuration = new CorsConfiguration();
             //configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:5500"));
             configuration.setAllowedOriginPatterns(List.of("*")); //depois apagar, apenas para teste
-            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH","PUT", "DELETE", "OPTIONS"));
             configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
             configuration.setExposedHeaders(List.of("Authorization"));
             configuration.setAllowCredentials(true);

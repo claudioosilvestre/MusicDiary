@@ -1,11 +1,11 @@
 package com.musicdiary.services;
 
 import com.musicdiary.converters.SavedSongConverter;
+import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
 import com.musicdiary.exceptions.InvalidUserException;
 import com.musicdiary.exceptions.SavedSongNotFoundException;
-import com.musicdiary.exceptions.SongNotFoundException;
 import com.musicdiary.models.SavedSong;
 import com.musicdiary.models.Song;
 import com.musicdiary.models.User;
@@ -26,11 +26,13 @@ public class SavedSongServiceImpl implements SavedSongService {
     private UserRepository userRepository;
     private SongRepository songRepository;
     private SavedSongRepository savedSongRepository;
+    private SavedSongConverter savedSongConverter;
 
-    public SavedSongServiceImpl(UserRepository userRepository, SongRepository songRepository, SavedSongRepository savedSongRepository) {
+    public SavedSongServiceImpl(UserRepository userRepository, SongRepository songRepository, SavedSongRepository savedSongRepository, SavedSongConverter savedSongConverter) {
         this.userRepository = userRepository;
         this.songRepository = songRepository;
         this.savedSongRepository = savedSongRepository;
+        this.savedSongConverter = savedSongConverter;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class SavedSongServiceImpl implements SavedSongService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        List<SavedSong> savedSongList = savedSongRepository.findByUser(user);
+        List<SavedSong> savedSongList = savedSongRepository.findByUserOrderByCreatedAtDesc(user);
 
         List<SaveSongResponseDTO> saveSongResponse = savedSongList.stream()
                 .map(song -> SavedSongConverter.toResponseDTO(song))
@@ -72,6 +74,22 @@ public class SavedSongServiceImpl implements SavedSongService {
 
         return SavedSongConverter.toResponseDTO(savedSong);
 
+    }
+
+    @Override
+    public SaveSongResponseDTO editNote(Long id, EditNoteRequestDTO editNoteRequestDTO) {
+        if(id <= 0) {
+            throw new IllegalArgumentException("Id must be positive");
+        }
+
+        SavedSong savedSong = savedSongRepository.findById(id)
+                .orElseThrow(() -> new SavedSongNotFoundException());
+
+        savedSong.setNote(editNoteRequestDTO.getNote());
+
+        savedSongRepository.save(savedSong);
+
+        return savedSongConverter.toResponseDTO(savedSong);
     }
 
     @Override
