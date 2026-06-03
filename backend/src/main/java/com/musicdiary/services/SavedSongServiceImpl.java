@@ -66,6 +66,7 @@ public class SavedSongServiceImpl implements SavedSongService {
         SavedSong savedSong = new SavedSong();
         savedSong.setUser(user);
         savedSong.setSong(song);
+        savedSong.setNote(saveSongRequestDTO.getNote());
 
         savedSongRepository.save(savedSong);
 

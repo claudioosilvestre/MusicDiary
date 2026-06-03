@@ -15,7 +15,8 @@ public class SavedSongConverter {
         saveSongResponseDTO.setImageUrl(savedSong.getSong().getImageUrl());
         saveSongResponseDTO.setLastFmUrl(savedSong.getSong().getLastFmUrl());
         saveSongResponseDTO.setCreatedAt(savedSong.getCreatedAt());
-
+        saveSongResponseDTO.setNote(savedSong.getNote());
+        
         return saveSongResponseDTO;
     }
 }
