@@ -5,6 +5,8 @@ const searchBtn = document.getElementById("searchButton");
 const dropdown = document.getElementById("searchType");
 const result = document.getElementById("result");
 
+let selectedSongOrTrack = null;
+
     dropdown.addEventListener("change", function() {
         const selectedValue = dropdown.value;
     })
@@ -29,7 +31,6 @@ searchBtn.addEventListener("click", function() {
 })
 
 
-
 async function searchArtists(artist) {
     const url = `http://localhost:8080/search/artists?name=${artist}`;
 
@@ -41,7 +42,6 @@ async function searchArtists(artist) {
         }
         
         const artistSaved = await response.json();
-        
 
         document.getElementById("results").innerHTML = "";
         
@@ -57,34 +57,22 @@ async function searchArtists(artist) {
                 </div>
             </div>
             `;
+
             const addFavBtn = document.createElement("button");
             addFavBtn.textContent = "Add to Favorites";
             addFavBtn.className = "btn btn-primary mt-2";
-            addFavBtn.addEventListener("click", async function() {
-                const token = localStorage.getItem("token");
-
-                const response = await fetch("http://localhost:8080/saved-songs", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify({
-                        title: item.name,
-                        artistName: item.name,
-                        imageUrl: item.imageURL,
-                        lastFmUrl: item.profileURL
-                    })
+            addFavBtn.addEventListener("click", function() {
+                selectedSongOrTrack = {
+                    title: item.name,
+                    artistName: item.name,
+                    imageUrl: item.imageURL,
+                    lastFmUrl: item.profileURL
+                };
+                openModal();
             });
-            if(response.ok) {
-                alert("Saved!");
-            }
-        });
 
-            const cardBody = artistCard.querySelector(".card-body");
-            cardBody.appendChild(addFavBtn);
-            
-        document.getElementById("results").appendChild(artistCard);
+            artistCard.querySelector(".card-body").appendChild(addFavBtn);
+            document.getElementById("results").appendChild(artistCard);
         });
 
         return artistSaved;
@@ -129,24 +117,13 @@ async function searchTracks(track) {
             addFavTrackBtn.className = "btn btn-primary mt-2";;
 
             addFavTrackBtn.addEventListener("click", async function() {
-                const token = localStorage.getItem("token");
-
-                const response = await fetch("http://localhost:8080/saved-songs", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify({
-                        title: item.musicName,
-                        artistName: item.artistName,
-                        imageURL: item.imageURL,
-                        lastFmUrl: ""
-                    })
-                });
-                if(response.ok) {
-                    alert("Saved!");
-                }
+                selectedSongOrTrack = {
+                    title: item.musicName,
+                    artistName: item.artistName,
+                    imageUrl: item.imageURL,
+                    lastFmUrl: ""
+                };
+                openModal();
             });
 
             const cardBody = tracksCard.querySelector(".card-body");
@@ -165,4 +142,39 @@ async function searchTracks(track) {
 document.getElementById("logoutBtn").addEventListener("click", function() {
     localStorage.removeItem("token");
     window.location.href = "index.html";
+});
+
+function openModal() {
+    
+    const noteModalElement = document.getElementById('modalNote');
+    
+    const modalNote = new bootstrap.Modal(noteModalElement);
+    
+    modalNote.show();
+}
+
+const saveBtn = document.getElementById("saveNote-btn");
+
+saveBtn.addEventListener("click", async function() {
+    const token = localStorage.getItem("token");
+
+    console.log(token);
+    const response = await fetch("http://localhost:8080/saved-songs", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            title: selectedSongOrTrack.title,
+            artistName: selectedSongOrTrack.artistName,
+            imageUrl: selectedSongOrTrack.imageUrl,
+            lastFmUrl: selectedSongOrTrack.lastFmUrl,
+            note: document.getElementById("noteInput").value
+        })
+    });
+    if(response.ok) {
+        alert("Saved!");
+    }
+    bootstrap.Modal.getInstance(document.getElementById('modalNote')).hide();
 });
