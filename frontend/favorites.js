@@ -42,6 +42,8 @@ async function listFavorites() {
             deleteFavBtn.textContent="Delete";
             deleteFavBtn.className="btn btn-danger mt-2";
             deleteFavBtn.addEventListener("click", async function() {
+                const confirmed = confirm("Are you sure you want to remove this from favorites?");
+                if(confirmed) {
                 const token = localStorage.getItem("token");
 
                 const response = await fetch(`http://localhost:8080/saved-songs/${item.id}`, {
@@ -49,11 +51,13 @@ async function listFavorites() {
                     headers: {
                         "Authorization": "Bearer " + token 
                     }
+                
             });
             if(response.ok) {
                 listFavorites();
             }
-        });
+        }
+    });
 
             artistCard.querySelector(".card-body").appendChild(deleteFavBtn);
             document.getElementById("favorites").appendChild(artistCard);
