@@ -1,5 +1,6 @@
 package com.musicdiary.controllers;
 
+import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
 import com.musicdiary.services.SavedSongService;
@@ -33,6 +34,15 @@ public class SavedSongController {
         SaveSongResponseDTO saveSongResponseDTO = savedSongService.saveSong(saveSongRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saveSongResponseDTO);
+
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<SaveSongResponseDTO> editNote(@PathVariable Long id, @Valid @RequestBody EditNoteRequestDTO editNoteRequestDTO) {
+
+        SaveSongResponseDTO saveSongResponseDTO = savedSongService.editNote(id, editNoteRequestDTO);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(saveSongResponseDTO);
 
     }
 
