@@ -239,3 +239,23 @@
     position: relative;
     z-index: 3;
 }
+
+#noteInput {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #ccc !important;
+}
+
+#noteInput::placeholder {
+    color: #888 !important;
+}
+
+.card-note {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-style: italic;
+}

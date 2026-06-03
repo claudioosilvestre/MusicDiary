@@ -158,7 +158,11 @@ const saveBtn = document.getElementById("saveNote-btn");
 saveBtn.addEventListener("click", async function() {
     const token = localStorage.getItem("token");
 
-    console.log(token);
+    const note = document.getElementById("noteInput").value;
+    if(note.length > 500) {
+        alert("Note is too long. Maximum 500 characters.");
+        return;
+    }
     const response = await fetch("http://localhost:8080/saved-songs", {
         method: "POST",
         headers: {

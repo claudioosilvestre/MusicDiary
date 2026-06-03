@@ -20,6 +20,7 @@ public class SavedSong {
     @JoinColumn(name = "song_id")
     private Song song;
 
+    @Column(columnDefinition = "TEXT")
     private String note;
 
     @CreationTimestamp
