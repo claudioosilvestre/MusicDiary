@@ -1,8 +1,8 @@
 package com.musicdiary.services;
 
-import com.musicdiary.converters.SavedSongConverter;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
+import com.musicdiary.exceptions.SavedSongNotFoundException;
 import com.musicdiary.models.SavedSong;
 import com.musicdiary.models.Song;
 import com.musicdiary.models.User;
@@ -52,7 +52,7 @@ public class SavedSongServiceImplTest {
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
 
         List<SavedSong> savedSongList = new ArrayList<>();
-        when(savedSongRepository.findByUser(user)).thenReturn(savedSongList);
+        when(savedSongRepository.findByUserOrderByCreatedAtDesc(user)).thenReturn(savedSongList);
 
         List<SaveSongResponseDTO> saveSongResponse = savedSongServiceImpl.listSavedSongs();
 
@@ -104,7 +104,7 @@ public class SavedSongServiceImplTest {
         savedSong.setSong(song);
 
         savedSongList.add(savedSong);
-        when(savedSongRepository.findByUser(user)).thenReturn(savedSongList);
+        when(savedSongRepository.findByUserOrderByCreatedAtDesc(user)).thenReturn(savedSongList);
 
         List<SaveSongResponseDTO> savedSongListDTO = savedSongServiceImpl.listSavedSongs();
 

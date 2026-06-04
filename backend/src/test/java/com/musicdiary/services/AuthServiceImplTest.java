@@ -3,6 +3,7 @@ package com.musicdiary.services;
 import com.musicdiary.dtos.LoginRequestDTO;
 import com.musicdiary.dtos.RegisterRequestDTO;
 import com.musicdiary.exceptions.EmailNotFoundException;
+import com.musicdiary.exceptions.PasswordDoesNotMatchException;
 import com.musicdiary.exceptions.UserEmailAlreadyExistsException;
 import com.musicdiary.models.User;
 import com.musicdiary.repositories.UserRepository;
