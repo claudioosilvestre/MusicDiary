@@ -81,6 +81,7 @@ Open `frontend/index.html` with Live Server or your preferred method.
 - **Favorites System:** Save artists and tracks to a personal favorites list with timestamps.
 - **Music History:** View all saved favorites in a dedicated history page.
 - **Modern UI:** Dark-themed responsive interface built with Bootstrap 5 and custom CSS.
+- **Personal Notes:** Add and edit personal notes to saved favorites, with a modal interface and character limit.
 
 ## Technical Highlights
 
@@ -90,6 +91,7 @@ Open `frontend/index.html` with Live Server or your preferred method.
 - **Database Design:** Relational model with User, Song, and SavedSong entities — avoiding data duplication by sharing Song records across users.
 - **CORS Configuration:** Global CORS configuration supporting multiple origins for development and production environments.
 - **Security Best Practices:** Passwords hashed with BCrypt, JWT secrets stored in environment-specific properties files (excluded from version control).
+- **Unit Testing:** Unit tests covering Services with JUnit 5 and Mockito, including authentication, JWT, and music diary operations.
 
 ## Future Improvements
 
@@ -98,7 +100,6 @@ Open `frontend/index.html` with Live Server or your preferred method.
 - Playlist creation and management
 - OAuth2 login with Spotify
 - AI-powered music recommendations based on saved history
-- Unit and integration tests
 
 ## Author
 
