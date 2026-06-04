@@ -2,6 +2,7 @@ package com.musicdiary.converters;
 
 import com.musicdiary.dtos.SaveSongResponseDTO;
 import com.musicdiary.models.SavedSong;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SavedSongConverter {
