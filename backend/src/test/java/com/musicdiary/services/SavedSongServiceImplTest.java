@@ -1,5 +1,7 @@
 package com.musicdiary.services;
 
+import com.musicdiary.converters.SavedSongConverter;
+import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
 import com.musicdiary.exceptions.SavedSongNotFoundException;
@@ -236,5 +238,56 @@ public class SavedSongServiceImplTest {
         assertEquals("Saved song not found", exception.getMessage());
 
         verify(savedSongRepository).findById(1L);
+    }
+
+    @Test
+    void editNoteWithValidData_shouldReturnSaveSongResponseDTO() {
+
+        Song song = new Song();
+        song.setTitle("Test");
+        song.setArtistName("TestArtist");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setId(1L);
+        savedSong.setSong(song);
+
+        EditNoteRequestDTO editNoteRequestDTO = new EditNoteRequestDTO();
+        editNoteRequestDTO.setNote("TestNote");
+
+        when(savedSongRepository.findById(1L)).thenReturn(Optional.of(savedSong));
+
+        SaveSongResponseDTO songResponseDTO = savedSongServiceImpl.editNote(1L, editNoteRequestDTO);
+
+        assertNotNull(songResponseDTO);
+        assertEquals("TestNote", songResponseDTO.getNote());
+
+    }
+
+    @Test
+    void editNoteWithInvalidId_shouldThrowException() {
+
+        EditNoteRequestDTO editNoteRequestDTO = new EditNoteRequestDTO();
+        editNoteRequestDTO.setNote("TestNote");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> savedSongServiceImpl.editNote(-2L, editNoteRequestDTO));
+
+        assertEquals("Id must be positive", exception.getMessage());
+    }
+
+    @Test
+    void editNoteWithNonExistentSong_shouldThrowException() {
+
+        EditNoteRequestDTO editNoteRequestDTO = new EditNoteRequestDTO();
+
+        when(savedSongRepository.findById(1L)).thenReturn(Optional.empty());
+
+        SavedSongNotFoundException exception = assertThrows(
+                SavedSongNotFoundException.class,
+                () -> savedSongServiceImpl.editNote(1L, editNoteRequestDTO));
+
+
+        assertEquals("Saved song not found", exception.getMessage());
     }
 }
