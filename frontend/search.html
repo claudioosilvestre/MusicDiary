@@ -99,6 +99,9 @@ animate();
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    bars.forEach((bar, i) => {
+        bar.x = (canvas.width / barCount) * i;
+    });
 });
     
 </script>

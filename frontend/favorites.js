@@ -44,7 +44,7 @@ async function listFavorites() {
             
             const viewNote = document.createElement("button");
             viewNote.textContent="View Note";
-            viewNote.className="btn btn-primary";
+            viewNote.className="btn btn-primary mt-2";
             viewNote.addEventListener("click", async function() {
 
                 selectedSavedSongId = item.id;
@@ -56,8 +56,6 @@ async function listFavorites() {
 
                 modalNote.show();
             })
-
-            artistCard.querySelector(".card-body").appendChild(viewNote);
 
             const deleteFavBtn = document.createElement("button");
             deleteFavBtn.textContent="Delete";
@@ -79,10 +77,14 @@ async function listFavorites() {
             }
         }
     });
-
-            artistCard.querySelector(".card-body").appendChild(deleteFavBtn);
-            document.getElementById("favorites").appendChild(artistCard);
-        });
+    
+    const btnContainer = document.createElement("div");
+    btnContainer.className = "d-flex justify-content-between mt-auto flex-wrap gap-1"
+    btnContainer.appendChild(viewNote);
+    btnContainer.appendChild(deleteFavBtn);
+    artistCard.querySelector(".card-body").appendChild(btnContainer);
+    document.getElementById("favorites").appendChild(artistCard);
+});
 
     } catch(error) {
         console.error("Error loading favorites:", error);
