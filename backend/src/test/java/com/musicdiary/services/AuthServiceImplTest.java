@@ -41,30 +41,33 @@ public class AuthServiceImplTest {
     void registerWithValidData_shouldReturnGeneratedToken() {
 
         RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO();
+        registerRequestDTO.setEmail("test@mail.com");
         registerRequestDTO.setFirstName("testName");
         registerRequestDTO.setLastName("testLastName");
-        registerRequestDTO.setEmail("test@email.com");
-        registerRequestDTO.setBirthDate(LocalDate.of(1990, 01, 01));
+        registerRequestDTO.setBirthDate(LocalDate.of(1990, 10, 20));
         registerRequestDTO.setPassword("123456789");
 
-        when(passwordEncoder.encode("123456789")).thenReturn("hashedPassword123");
+        String passwordHash = "hashedPassword123";
 
-        User user = new User();
-        user.setFirstName("testName");
-        user.setLastName("testLastName");
-        user.setEmail("test@email.com");
-        user.setBirthDate(LocalDate.of(1990, 01, 01));
-        user.setPasswordHash("hashedPassword123");
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode("123456789")).thenReturn(passwordHash);
+
+        ArgumentCaptor<User> user = ArgumentCaptor.forClass(User.class);
 
         when(jwtService.generateToken(any(User.class))).thenReturn("fake-jwt-token");
 
+        String result = authService.register(registerRequestDTO);
 
-        String string = authService.register(registerRequestDTO);
+        verify(userRepository).save(user.capture());
 
-        verify(passwordEncoder).encode(registerRequestDTO.getPassword());
-        verify(userRepository).save(any(User.class));
-        verify(jwtService).generateToken(any(User.class));
-        assertEquals("fake-jwt-token", string);
+        User savedUser = user.getValue();
+
+        assertEquals("fake-jwt-token", result);
+        assertEquals("hashedPassword123", savedUser.getPasswordHash());
+        assertEquals("test@mail.com", savedUser.getEmail());
+        assertEquals("testName", savedUser.getFirstName());
+        assertEquals("testLastName", savedUser.getLastName());
+        assertEquals(LocalDate.of(1990, 10, 20), savedUser.getBirthDate());
     }
 
     @Test
