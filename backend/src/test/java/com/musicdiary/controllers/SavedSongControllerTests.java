@@ -31,6 +31,30 @@ public class SavedSongControllerTests {
     @MockBean
     private JwtService jwtService;
 
+
+    @Test
+    void shouldReturnSavedSongsList() throws Exception{
+
+        SaveSongResponseDTO saveSongResponseDTO = new SaveSongResponseDTO();
+        saveSongResponseDTO.setId(1L);
+        saveSongResponseDTO.setTitle("test");
+        saveSongResponseDTO.setArtistName("testName");
+        saveSongResponseDTO.setNote("testNote");
+
+        when(savedSongService.listSavedSongs()).thenReturn(List.of(saveSongResponseDTO));
+
+        mockMvc.perform(get("/saved-songs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("test"))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].artistName").value("testName"))
+                .andExpect(jsonPath("$[0].note").value("testNote"))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1));
+
+        verify(savedSongService).listSavedSongs();
+    }
+
     @Test
     void shouldReturnSavedSongsByArtist() throws Exception {
 
@@ -51,7 +75,5 @@ public class SavedSongControllerTests {
                 .andExpect(jsonPath("$.size()").value(1));
 
         verify(savedSongService).listByArtist("Metallica");
-
-
     }
 }
