@@ -10,6 +10,8 @@ public interface SavedSongService {
 
     List<SaveSongResponseDTO> listSavedSongs();
 
+    List<SaveSongResponseDTO> listByArtist(String artistName);
+
     SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO);
 
     SaveSongResponseDTO editNote(Long id, EditNoteRequestDTO editNoteRequestDTO);

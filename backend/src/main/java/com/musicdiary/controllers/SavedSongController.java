@@ -27,6 +27,12 @@ public class SavedSongController {
         return ResponseEntity.ok(savedSongService.listSavedSongs());
     }
 
+    @GetMapping("/artist/{artistName}")
+    public ResponseEntity <List<SaveSongResponseDTO>>  listSavedSongByArtistName (@PathVariable String artistName) {
+
+        return ResponseEntity.ok(savedSongService.listByArtist(artistName));
+    }
+
 
     @PostMapping
     public ResponseEntity<SaveSongResponseDTO> saveSong(@Valid @RequestBody SaveSongRequestDTO saveSongRequestDTO) {
