@@ -54,6 +54,28 @@ public class SavedSongServiceImpl implements SavedSongService {
     }
 
     @Override
+    public List<SaveSongResponseDTO> listByArtist(String artistName) {
+
+        if(artistName == null || artistName.isBlank()) {
+            throw new IllegalArgumentException("Artist name must be valid");
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<SavedSong> savedSongList = savedSongRepository.findByUserAndSongArtistName(user, artistName);
+
+        List<SaveSongResponseDTO> responses = savedSongList.stream()
+                .map(song -> SavedSongConverter.toResponseDTO(song))
+                .collect(Collectors.toList());
+
+        return responses;
+    }
+
+    @Override
     public SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
