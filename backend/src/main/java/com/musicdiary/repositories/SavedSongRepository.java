@@ -11,4 +11,6 @@ import java.util.List;
 public interface SavedSongRepository extends JpaRepository<SavedSong, Long> {
 
     List<SavedSong> findByUserOrderByCreatedAtDesc(User user);
+
+    List<SavedSong> findByUserAndSongArtistName(User user, String artistName);
 }
