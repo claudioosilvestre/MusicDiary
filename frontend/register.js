@@ -63,8 +63,12 @@ async function register(firstName, lastName, birthDate, email, password) {
 
         const userSaved = await response.json();
 
-        localStorage.setItem("token", userSaved.token);
-        window.location.href = "search.html"
+        const successMsg = document.querySelector("#success-message");
+        successMsg.style.display = "block";
+
+        setTimeout(function() {
+            window.location.href = "index.html"
+        }, 2000)
         
         return userSaved;
 
