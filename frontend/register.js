@@ -61,6 +61,9 @@ async function register(firstName, lastName, birthDate, email, password) {
             throw new Error(`Server error: ${response.status}`);
         }
 
+        const errorMsg = document.querySelector("#error-credentials");
+        errorMsg.style.display = "none";
+
         const userSaved = await response.json();
 
         const successMsg = document.querySelector("#success-message");
