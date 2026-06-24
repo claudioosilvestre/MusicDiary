@@ -1,29 +1,38 @@
-package com.musicdiary.services;
+package com.musicdiary.controllers;
 
-import com.musicdiary.exceptions.UserNotFoundException;
-import com.musicdiary.models.User;
-import com.musicdiary.repositories.UserRepository;
-import org.springframework.stereotype.Service;
+import com.musicdiary.dtos.UserUpdateRequestDTO;
+import com.musicdiary.dtos.UserUpdateResponseDTO;
+import com.musicdiary.services.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
-@Service
-public class UserServiceImpl implements UserService {
+@RestController
+@RequestMapping("/user")
+public class UserController {
 
-    private UserRepository userRepository;
+    private UserService userService;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @Override
-    public void deleteAccount(String email) {
-        if(email == null) {
-            throw new IllegalArgumentException("Email must be valid");
-        }
+    @PatchMapping
+    public ResponseEntity<UserUpdateResponseDTO> updateProfile(@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+        UserUpdateResponseDTO responseDTO = userService.updateProfile(
+                SecurityContextHolder.getContext().getAuthentication().getName(), userUpdateRequestDTO);
 
-        userRepository.delete(user);
+        return ResponseEntity.ok(responseDTO);
+    }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser() {
+
+
+        userService.deleteAccount(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        return ResponseEntity.noContent().build();
     }
 }
