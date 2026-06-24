@@ -365,3 +365,50 @@
     display: block;
     margin-bottom: 0.5rem;
 }
+
+.profile-page {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    
+}
+
+.profile-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.editBtn {
+    width: 100%;
+    padding: 12px;
+    background: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+.editBtn:hover {
+    background: #5a52d5;
+}
+
+.delAccBtn {
+    width: 100%;
+    padding: 12px;
+    background: #ca2d3a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+.delAccBtn:hover {
+    background: #7c1319;
+}
