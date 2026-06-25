@@ -20,6 +20,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserUpdateResponseDTO getUser(String email) {
+
+        if(email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email must be valid");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        return userUpdateConverter.toResponseDTO(user);
+    }
+
+    @Override
     public UserUpdateResponseDTO updateProfile(String email, UserUpdateRequestDTO userUpdateRequestDTO) {
 
         if(email == null || email.isBlank()) {
