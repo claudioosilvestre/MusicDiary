@@ -18,6 +18,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping
+    public ResponseEntity<UserUpdateResponseDTO> getUser() {
+
+        UserUpdateResponseDTO responseDTO = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @PatchMapping
     public ResponseEntity<UserUpdateResponseDTO> updateProfile(@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
 
