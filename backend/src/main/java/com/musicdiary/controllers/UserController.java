@@ -1,5 +1,6 @@
 package com.musicdiary.controllers;
 
+import com.musicdiary.dtos.ChangePasswordRequestDTO;
 import com.musicdiary.dtos.UserUpdateRequestDTO;
 import com.musicdiary.dtos.UserUpdateResponseDTO;
 import com.musicdiary.services.UserService;
@@ -33,6 +34,14 @@ public class UserController {
                 SecurityContextHolder.getContext().getAuthentication().getName(), userUpdateRequestDTO);
 
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO) {
+
+        userService.changePassword(SecurityContextHolder.getContext().getAuthentication().getName(), changePasswordRequestDTO);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
