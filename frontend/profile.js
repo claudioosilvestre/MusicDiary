@@ -2,9 +2,13 @@ const firstNameInput = document.getElementById("firstName");
 const lastNameInput = document.getElementById("lastName");
 const birthDateInput = document.getElementById("birthDate");
 const emailInput = document.getElementById("email");
+const currentPasswordInput = document.getElementById("actualPassword");
+const newPasswordInput = document.getElementById("newPassword");
+const confirmNewPasswordInput = document.getElementById("confirmPassword");
 
 const editButtonInput = document.getElementById("edit-button");
 const deleteAccountBtnInput = document.getElementById("deleteAccountbutton");
+const changePasswordBtnInput = document.getElementById("change-Pass-Btn");
 
 async function loadProfile () {
     const url = "http://localhost:8080/user"
@@ -71,11 +75,8 @@ async function editProfile () {
         email: emailInput.value
     };
 
-    console.log("userData a enviar:", userData); 
-
     try {
         const token = localStorage.getItem("token");
-        console.log("token:", token);
 
         const response = await fetch(url, {
             method: "PATCH",
@@ -85,14 +86,11 @@ async function editProfile () {
             },
             body: JSON.stringify(userData)
         });
-        console.log("status da resposta:", response.status); 
         if(!response.ok) {
             throw new Error(`Server error: ${response.status}`)
         }
 
         const editUserSaved = await response.json();
-
-        console.log("editUserSaved:", editUserSaved);
 
         firstNameInput.value = editUserSaved.firstName;
         lastNameInput.value = editUserSaved.lastName;
@@ -104,6 +102,70 @@ async function editProfile () {
 
         return editUserSaved;
     } catch (error) {
+        const errorMsg = document.querySelector("#error-credentials");
+        errorMsg.style.display = "block";
+
+        console.error("Failed sending PATCH:", error)
+    }
+}
+
+changePasswordBtnInput.addEventListener("click", function() {
+    
+    const currentPassword = currentPasswordInput.value;
+    const newPassword = newPasswordInput.value;
+    const confirmNewPassword = confirmNewPasswordInput.value;
+    
+    if(currentPassword.trim() === "") {
+        alert("Password cannot be empty")
+        return;
+    }
+    if(newPassword.trim() === "") {
+        alert("Password cannot be empty")
+        return;
+    }
+    if(confirmNewPassword.trim() === "") {
+        alert("Password cannot be empty")
+        return;
+    }
+    if(!(newPassword === confirmNewPassword)) {
+        alert("New Password and Confirm New Password fields must be equals")
+        return;
+    }
+    
+    changePassword();
+
+})
+
+async function changePassword() {
+    
+    const url = "http://localhost:8080/user/password"
+
+    const userData = {
+        currentPassword: currentPasswordInput.value,
+        newPassword: newPasswordInput.value,
+        confirmNewPassword: confirmNewPasswordInput.value
+    };
+
+    try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(userData)
+        });
+
+        if(!response.ok) {
+            throw new Error(`Server error: ${response.status}`)
+        }
+
+        const sucessMsg = document.querySelector("#success-message-password");
+        sucessMsg.style.display = "block";
+
+    } catch(error) {
         const errorMsg = document.querySelector("#error-credentials");
         errorMsg.style.display = "block";
 

@@ -412,3 +412,37 @@
 .delAccBtn:hover {
     background: #7c1319;
 }
+
+.changePassBtn {
+    width: 100%;
+    padding: 12px;
+    background: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+.changePassBtn:hover {
+    background: #5a52d5;
+}
+
+#change-password-btn {
+    width: 100%;
+    padding: 12px;
+    background: lightgray;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+#change-password-btn:hover {
+    background: gray;
+}
