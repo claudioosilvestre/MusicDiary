@@ -48,13 +48,35 @@
                 </span>
                 
                 <button id="edit-button" class="editBtn">Edit</button>
-                <button id="deleteAccountbutton" class="delAccBtn">Delete Account</button>
+                
+                <button id="change-password-btn" data-bs-toggle="collapse" data-bs-target="#changePass">Change Password</button>
+                <div class="collapse" id="changePass">
+
+                    <label for="actualPassword">Actual Password: </label>
+                    <input class="form-control mb-3" type="password" id="actualPassword" name="actualPassword">
+
+                    <label for="newPassword">New Password: </label>
+                    <input class="form-control mb-3" type="password" id="newPassword" name="newPassword">
+
+                    <label for="confirmPassword">Confirm New Password: </label>
+                    <input class="form-control mb-3" type="password" id="confirmPassword" name="confirmPassword">
+
+                    <span id="success-message-password" style="display: none; color: green">
+                        Password changed successfully!
+                    </span>
+                    
+                    <button id="change-Pass-Btn" class="changePassBtn">Submit</button>
+                </div>
+                <div class="deleteAcc">
+                    <hr>
+                    <h6></h6>
+                    <button id="deleteAccountbutton" class="delAccBtn">Delete Account</button>
+                </div>
             </div>
         </div>
-    </div>
     
 <script src="profile.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <canvas id="constellation"></canvas>
 <script>
 const canvas = document.getElementById('constellation');
