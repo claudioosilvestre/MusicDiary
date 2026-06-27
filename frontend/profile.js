@@ -71,10 +71,13 @@ async function editProfile () {
         email: emailInput.value
     };
 
+    console.log("userData a enviar:", userData); 
+
     try {
         const token = localStorage.getItem("token");
+        console.log("token:", token);
 
-        const reponse = await fetch(url, {
+        const response = await fetch(url, {
             method: "PATCH",
             headers: {
                 'Content-Type': 'application/json',
@@ -82,16 +85,22 @@ async function editProfile () {
             },
             body: JSON.stringify(userData)
         });
-        if(!reponse.ok) {
+        console.log("status da resposta:", response.status); 
+        if(!response.ok) {
             throw new Error(`Server error: ${response.status}`)
         }
 
-        const editUserSaved = await reponse.json();
+        const editUserSaved = await response.json();
+
+        console.log("editUserSaved:", editUserSaved);
 
         firstNameInput.value = editUserSaved.firstName;
         lastNameInput.value = editUserSaved.lastName;
         birthDateInput.value = editUserSaved.birthDate;
         emailInput.value = editUserSaved.email;
+
+        const sucessMsg = document.querySelector("#success-message");
+        sucessMsg.style.display = "block";
 
         return editUserSaved;
     } catch (error) {
