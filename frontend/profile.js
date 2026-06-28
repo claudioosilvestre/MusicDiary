@@ -166,7 +166,7 @@ async function changePassword() {
         sucessMsg.style.display = "block";
 
     } catch(error) {
-        const errorMsg = document.querySelector("#error-credentials");
+        const errorMsg = document.querySelector("#fail-message-password");
         errorMsg.style.display = "block";
 
         console.error("Failed sending PATCH:", error)
