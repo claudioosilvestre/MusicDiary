@@ -446,3 +446,10 @@
 #change-password-btn:hover {
     background: gray;
 }
+
+#fail-message-password {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
