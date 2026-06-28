@@ -371,6 +371,10 @@
     
 }
 
+#hero-title {
+    margin-bottom: 10px;
+}
+
 .profile-container {
     min-height: 100vh;
     display: flex;
