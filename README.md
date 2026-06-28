@@ -76,6 +76,7 @@ Open `frontend/index.html` with Live Server or your preferred method.
 ## Features
 
 - **User Authentication:** Secure registration and login with JWT tokens and BCrypt password hashing.
+- **Profile Management:** View and edit profile details, change password with current-password verification, and self-service account deletion.
 - **Artist Search:** Search for artists by name using the Last.fm API with listener counts and images.
 - **Track Search:** Search for tracks by name with artist information and listener statistics.
 - **Favorites System:** Save artists and tracks to a personal favorites list with timestamps.
@@ -96,6 +97,7 @@ Open `frontend/index.html` with Live Server or your preferred method.
 ## Future Improvements
 
 - Unit and integration tests for Controller layers
+- Migrate artist/album image data to the Spotify Web API to resolve Last.fm's image limitations
 - Music statistics and listening insights dashboard
 - Playlist creation and management
 - OAuth2 login with Spotify
