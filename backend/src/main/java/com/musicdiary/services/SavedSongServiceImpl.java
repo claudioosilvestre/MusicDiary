@@ -78,6 +78,10 @@ public class SavedSongServiceImpl implements SavedSongService {
     @Override
     public SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO) {
 
+        if(saveSongRequestDTO == null) {
+            throw new IllegalArgumentException("SaveSongRequest must be valid");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
@@ -102,6 +106,10 @@ public class SavedSongServiceImpl implements SavedSongService {
     public SaveSongResponseDTO editNote(Long id, EditNoteRequestDTO editNoteRequestDTO) {
         if(id <= 0) {
             throw new IllegalArgumentException("Id must be positive");
+        }
+
+        if(editNoteRequestDTO == null) {
+            throw new IllegalArgumentException("EditNoteRequest must be valid");
         }
 
         SavedSong savedSong = savedSongRepository.findById(id)
