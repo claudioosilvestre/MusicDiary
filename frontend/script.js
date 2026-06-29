@@ -42,7 +42,7 @@ async function userLogin(userName, passWord) {
         const userSaved = await response.json();
 
         localStorage.setItem("token", userSaved.token);
-        window.location.href = "search.html"
+        window.location.href = "dashboard.html"
         
         return userSaved;
     } catch (error) {
