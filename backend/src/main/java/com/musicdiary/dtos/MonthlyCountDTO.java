@@ -4,7 +4,7 @@ public class MonthlyCountDTO {
 
     private String month;
 
-    private int count;
+    private Long count;
 
     public String getMonth() {
         return month;
@@ -14,11 +14,11 @@ public class MonthlyCountDTO {
         this.month = month;
     }
 
-    public int getCount() {
+    public Long getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(Long count) {
         this.count = count;
     }
 }

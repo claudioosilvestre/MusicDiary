@@ -4,21 +4,21 @@ import java.util.List;
 
 public class DashboardResponseDTO {
 
-    private int totalMusicsSaved;
+    private Long totalMusicsSaved;
 
     private String mostSavedArtist;
 
-    private int timesOfMostSavedArtist;
+    private Long timesOfMostSavedArtist;
 
     private SaveSongResponseDTO lastSavedSong;
 
     private List<MonthlyCountDTO> monthCountList;
 
-    public int getTotalMusicsSaved() {
+    public Long getTotalMusicsSaved() {
         return totalMusicsSaved;
     }
 
-    public void setTotalMusicsSaved(int totalMusicsSaved) {
+    public void setTotalMusicsSaved(Long totalMusicsSaved) {
         this.totalMusicsSaved = totalMusicsSaved;
     }
 
@@ -30,11 +30,11 @@ public class DashboardResponseDTO {
         this.mostSavedArtist = mostSavedArtist;
     }
 
-    public int getTimesOfMostSavedArtist() {
+    public Long getTimesOfMostSavedArtist() {
         return timesOfMostSavedArtist;
     }
 
-    public void setTimesOfMostSavedArtist(int timesOfMostSavedArtist) {
+    public void setTimesOfMostSavedArtist(Long timesOfMostSavedArtist) {
         this.timesOfMostSavedArtist = timesOfMostSavedArtist;
     }
 
