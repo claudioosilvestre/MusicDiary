@@ -29,6 +29,9 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public DashboardResponseDTO getDashboard(String email) {
 
+        if(email == null) {
+            throw new IllegalArgumentException("Email must be valid");
+        }
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException());
 
@@ -58,11 +61,17 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     private Long totalMusicSavedByUser(User user) {
+        if(user == null) {
+            throw new IllegalArgumentException("User must be valid");
+        }
 
         return savedSongRepository.countByUser(user);
     }
 
     private ArtistCount mostSavedArtistByUser(User user) {
+        if(user == null) {
+            throw new IllegalArgumentException("User must be valid");
+        }
 
         List<ArtistCount> artistCountsList = savedSongRepository.findArtistCountsByUser(user);
 
@@ -74,6 +83,9 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     private SaveSongResponseDTO lastSavedSongByUser(User user) {
+        if(user == null) {
+            throw new IllegalArgumentException("User must be valid");
+        }
 
         SavedSong savedSong = savedSongRepository.findFirstByUserOrderByCreatedAtDesc(user);
 
@@ -88,12 +100,15 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     private List<MonthlyCountProjection> monthCountListByUser(User user) {
+        if(user == null) {
+            throw new IllegalArgumentException("User must be valid");
+        }
 
         return savedSongRepository.findMonthlyCountsByUser(user);
     }
 
     private MonthlyCountDTO toMonthlyCountDTO(MonthlyCountProjection monthlyCountProjection) {
-
+        
         MonthlyCountDTO monthlyCountDTO = new MonthlyCountDTO();
         monthlyCountDTO.setCount(monthlyCountProjection.getCount());
 
