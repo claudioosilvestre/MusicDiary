@@ -1,6 +1,8 @@
 package com.musicdiary.services;
 
 import com.musicdiary.converters.UserUpdateConverter;
+import com.musicdiary.dtos.ChangePasswordRequestDTO;
+import com.musicdiary.dtos.UserUpdateRequestDTO;
 import com.musicdiary.dtos.UserUpdateResponseDTO;
 import com.musicdiary.exceptions.UserNotFoundException;
 import com.musicdiary.models.User;
@@ -80,4 +82,101 @@ public class UserServiceImplTest {
         assertEquals("User not found", exception.getMessage());
         verify(userRepository).findByEmail("mail@mail.com");
     }
+
+    @Test
+    void updateProfile_shouldReturnUserUpdateResponseDTO() {
+
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@mail.com");
+
+        UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO();
+        userUpdateRequestDTO.setEmail("test@mail.com");
+        userUpdateRequestDTO.setFirstName("test");
+        userUpdateRequestDTO.setLastName("test1");
+        userUpdateRequestDTO.setBirthDate(LocalDate.of(2026, 10, 20));
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+
+        UserUpdateResponseDTO userUpdateResponseDTO = new UserUpdateResponseDTO();
+        userUpdateResponseDTO.setId(1L);
+        userUpdateResponseDTO.setEmail("test@mail.com");
+        userUpdateResponseDTO.setFirstName("test");
+        userUpdateResponseDTO.setLastName("test1");
+        userUpdateResponseDTO.setBirthDate(LocalDate.of(2026, 10, 20));
+
+        when(userRepository.save(user)).thenReturn(user);
+        when(userUpdateConverter.toResponseDTO(user)).thenReturn(userUpdateResponseDTO);
+
+        UserUpdateResponseDTO result = userService.updateProfile("test@mail.com", userUpdateRequestDTO);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("test@mail.com", result.getEmail());
+        assertEquals("test", result.getFirstName());
+        assertEquals("test1", result.getLastName());
+        assertEquals(LocalDate.of(2026, 10, 20), result.getBirthDate());
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+        verify(userRepository, times(1)).save(user);
+        verify(userUpdateConverter, times(1)).toResponseDTO(user);
+    }
+
+    @Test
+    void updateProfile_shouldReturnExceptionIfUserNotFound() {
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.empty());
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getUser("test@mail.com")
+        );
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository).findByEmail("test@mail.com");
+    }
+
+    @Test
+    void changePassword_shouldChangePassword() {
+
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@mail.com");
+        user.setFirstName("test");
+        user.setLastName("test1");
+        user.setBirthDate(LocalDate.of(2026, 10, 20));
+        user.setPasswordHash("hashPassword123");
+
+        ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO();
+        changePasswordRequestDTO.setCurrentPassword("hashPassword123");
+        changePasswordRequestDTO.setNewPassword("password12345");
+        changePasswordRequestDTO.setConfirmNewPassword("password12345");
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("hashPassword123", user.getPasswordHash())).thenReturn(true);
+
+        String newPassword = "passwordEncoded12345";
+        when(passwordEncoder.encode("password12345")).thenReturn(newPassword);
+
+        when(userRepository.save(user)).thenReturn(user);
+
+        userService.changePassword("test@mail.com", changePasswordRequestDTO);
+
+        assertEquals("passwordEncoded12345", user.getPasswordHash());
+
+    }
+
+    @Test
+    void deleteAccount_shouldDeleteAccount() {
+
+        User user = new User();
+        user.setEmail("test@mail.com");
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+
+        userService.deleteAccount("test@mail.com");
+
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+        verify(userRepository, times(1)).delete(user);
+    }
+    
 }
