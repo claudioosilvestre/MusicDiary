@@ -4,8 +4,11 @@ import com.musicdiary.converters.SavedSongConverter;
 import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
+import com.musicdiary.dtos.SavedSongFilterRequestDTO;
 import com.musicdiary.exceptions.InvalidUserException;
 import com.musicdiary.exceptions.SavedSongNotFoundException;
+import com.musicdiary.exceptions.SongAlreadySavedException;
+import com.musicdiary.exceptions.UserNotFoundException;
 import com.musicdiary.models.SavedSong;
 import com.musicdiary.models.Song;
 import com.musicdiary.models.User;
@@ -17,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,9 +80,40 @@ public class SavedSongServiceImpl implements SavedSongService {
     }
 
     @Override
+    public List<SaveSongResponseDTO> getSavedSongs(SavedSongFilterRequestDTO savedSongFilterRequestDTO) {
+        if(savedSongFilterRequestDTO == null) {
+            throw new IllegalArgumentException("saveSongFilterRequestDTO must be valid");
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        List<SavedSong> savedSongList = new ArrayList<>();
+
+        if(savedSongFilterRequestDTO.getTitle() != null) {
+            savedSongList = savedSongRepository.findByUserAndSongTitle(user, savedSongFilterRequestDTO.getTitle());
+        } else if (savedSongFilterRequestDTO.getArtistName() != null) {
+            savedSongList = savedSongRepository.findByUserAndSongArtistName(user, savedSongFilterRequestDTO.getArtistName());
+        } else if (savedSongFilterRequestDTO.getFrom() != null || savedSongFilterRequestDTO.getTo() != null) {
+            savedSongList = savedSongRepository.findByUserAndCreatedAtBetween(user, savedSongFilterRequestDTO.getFrom(), savedSongFilterRequestDTO.getTo());
+        } else {
+            savedSongList = savedSongRepository.findByUserOrderByCreatedAtDesc(user);
+        }
+
+        List<SaveSongResponseDTO> responseDTOList = savedSongList.stream()
+                .map(song -> SavedSongConverter.toResponseDTO(song))
+                .toList();
+
+        return responseDTOList;
+    }
+
+    @Override
     public SaveSongResponseDTO saveSong(SaveSongRequestDTO saveSongRequestDTO) {
 
-        if(saveSongRequestDTO == null) {
+        if (saveSongRequestDTO == null) {
             throw new IllegalArgumentException("SaveSongRequest must be valid");
         }
 
@@ -90,6 +125,10 @@ public class SavedSongServiceImpl implements SavedSongService {
 
         Song song = songRepository.findByTitleAndArtistName(saveSongRequestDTO.getTitle(), saveSongRequestDTO.getArtistName())
                 .orElseGet(() -> createSong(saveSongRequestDTO));
+
+        if (savedSongRepository.existsByUserAndSong(user, song)) {
+            throw new SongAlreadySavedException();
+        }
 
         SavedSong savedSong = new SavedSong();
         savedSong.setUser(user);
