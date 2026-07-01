@@ -4,6 +4,7 @@ import com.musicdiary.converters.UserUpdateConverter;
 import com.musicdiary.dtos.ChangePasswordRequestDTO;
 import com.musicdiary.dtos.UserUpdateRequestDTO;
 import com.musicdiary.dtos.UserUpdateResponseDTO;
+import com.musicdiary.exceptions.PasswordDoesNotMatchException;
 import com.musicdiary.exceptions.UserNotFoundException;
 import com.musicdiary.models.User;
 import com.musicdiary.repositories.UserRepository;
@@ -133,6 +134,7 @@ public class UserServiceImplTest {
 
         assertEquals("User not found", exception.getMessage());
         verify(userRepository).findByEmail("test@mail.com");
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -162,7 +164,70 @@ public class UserServiceImplTest {
         userService.changePassword("test@mail.com", changePasswordRequestDTO);
 
         assertEquals("passwordEncoded12345", user.getPasswordHash());
+    }
 
+    @Test
+    void changePassword_shouldThrowExceptionIfUserNotFound() {
+
+        ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO();
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.empty());
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.changePassword("test@mail.com", changePasswordRequestDTO));
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void changePassword_shouldThrowExceptionIfActualPasswordDoesNotMatch() {
+
+        User user = new User();
+        user.setEmail("test@mail.com");
+        user.setPasswordHash("hashPassword123");
+
+        ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO();
+        changePasswordRequestDTO.setCurrentPassword("password12345");
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(changePasswordRequestDTO.getCurrentPassword(), user.getPasswordHash())).thenReturn(false);
+
+        PasswordDoesNotMatchException exception = assertThrows(
+                PasswordDoesNotMatchException.class,
+                () -> userService.changePassword("test@mail.com", changePasswordRequestDTO));
+
+        assertEquals("Password does not match", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+        verify(passwordEncoder, times(1)).matches(changePasswordRequestDTO.getCurrentPassword(), user.getPasswordHash());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void changePassword_shouldThrowExceptionIfNewPasswordDoesNotMatch() {
+
+        User user = new User();
+        user.setEmail("test@mail.com");
+        user.setPasswordHash("hashPassword123");
+
+        ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO();
+        changePasswordRequestDTO.setCurrentPassword("hashPassword123");
+        changePasswordRequestDTO.setNewPassword("newPassword123");
+        changePasswordRequestDTO.setConfirmNewPassword("wrongPassword");
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(changePasswordRequestDTO.getCurrentPassword(), user.getPasswordHash())).thenReturn(true);
+
+        PasswordDoesNotMatchException exception = assertThrows(
+                PasswordDoesNotMatchException.class,
+                () -> userService.changePassword("test@mail.com", changePasswordRequestDTO));
+
+        assertEquals("Password does not match", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+        verify(passwordEncoder, times(1)).matches(changePasswordRequestDTO.getCurrentPassword(), user.getPasswordHash());
+        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -178,5 +243,19 @@ public class UserServiceImplTest {
         verify(userRepository, times(1)).findByEmail("test@mail.com");
         verify(userRepository, times(1)).delete(user);
     }
-    
+
+    @Test
+    void deleteAccount_shouldThrowExceptionIfUserNotFound() {
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.empty());
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.deleteAccount("test@mail.com"));
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+        verify(userRepository, never()).delete(any());
+    }
+
 }
