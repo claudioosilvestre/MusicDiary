@@ -1,6 +1,5 @@
 package com.musicdiary.services;
 
-import com.musicdiary.converters.SavedSongConverter;
 import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SavedSongServiceImplTest {
+public class SavedSongServiceImplTests {
 
     @Mock
     private UserRepository userRepository;

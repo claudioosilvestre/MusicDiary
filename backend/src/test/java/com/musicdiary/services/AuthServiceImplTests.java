@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceImplTest {
+public class AuthServiceImplTests {
 
     @Mock
     private UserRepository userRepository;

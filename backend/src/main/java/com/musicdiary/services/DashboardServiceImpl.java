@@ -112,8 +112,8 @@ public class DashboardServiceImpl implements DashboardService {
         MonthlyCountDTO monthlyCountDTO = new MonthlyCountDTO();
         monthlyCountDTO.setCount(monthlyCountProjection.getCount());
 
-        String year = monthlyCountProjection.getYear().toString();
-        String month = monthlyCountProjection.getMonth().toString();
+        Integer year = monthlyCountProjection.getYear();
+        Integer month = monthlyCountProjection.getMonth();
         String monthAndYear = String.format("%d-%02d", year, month);
 
 
