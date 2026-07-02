@@ -3,12 +3,14 @@ package com.musicdiary.controllers;
 import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
+import com.musicdiary.dtos.SavedSongFilterRequestDTO;
 import com.musicdiary.services.SavedSongService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,6 +35,22 @@ public class SavedSongController {
         return ResponseEntity.ok(savedSongService.listByArtist(artistName));
     }
 
+    @GetMapping
+    public ResponseEntity<List<SaveSongResponseDTO>> getSavedSongs(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String artistName,
+            @RequestParam(required = false) LocalDateTime from,
+            @RequestParam(required = false) LocalDateTime to
+            ) {
+
+        SavedSongFilterRequestDTO savedSongFilterRequestDTO = new SavedSongFilterRequestDTO();
+        savedSongFilterRequestDTO.setTitle(title);
+        savedSongFilterRequestDTO.setArtistName(artistName);
+        savedSongFilterRequestDTO.setFrom(from);
+        savedSongFilterRequestDTO.setTo(to);
+
+        return ResponseEntity.ok(savedSongService.getSavedSongs(savedSongFilterRequestDTO));
+    }
 
     @PostMapping
     public ResponseEntity<SaveSongResponseDTO> saveSong(@Valid @RequestBody SaveSongRequestDTO saveSongRequestDTO) {
