@@ -1,15 +1,77 @@
 listFavorites();
 
 let selectedSavedSongId = null;
+let selectedFilter = "all";
+
+const filterDropdown = document.getElementById("filter-category");
+const filterValue = document.getElementById("filterValue");
+const filterValueFrom = document.getElementById("filterValueFrom");
+const filterValueTo = document.getElementById("filterValueTo");
+
+filterValue.placeholder = "";
+filterValue.style.display = "none";
+filterValue.disabled = true;
+filterValueFrom.style.display = "none";
+filterValueFrom.disabled = true;
+filterValueTo.style.display = "none";
+filterValueTo.disabled = true;
+
+const searchFilterBtn = document.getElementById("search-Filter-Btn");
 
 document.getElementById("logoutBtn").addEventListener("click", function() {
     localStorage.removeItem("token");
     window.location.href = "index.html";
 });
 
-async function listFavorites() {
-    const url = "http://localhost:8080/saved-songs"
+filterDropdown.addEventListener("change", function() {
+            const categorySelected = this.value;
+            selectedFilter = categorySelected; 
+
+            if(selectedFilter === "title") {
+                showTextInput("Enter song title");
+            } else if(selectedFilter === "artistName") {
+                showTextInput("Enter artist name");
+            } else if (selectedFilter === "dateRange") {
+                showDateInputs();
+            } else {
+                hideAllInputs();
+            }
+
+            clearFilters();
+        });
+
     
+searchFilterBtn.addEventListener("click", function() {
+
+    if (selectedFilter === "dateRange") {
+        if (!filterValueFrom.value || !filterValueTo.value) {
+            alert("Please select both dates.");
+            return;
+        }
+        if (filterValueFrom.value > filterValueTo.value) {
+        alert("'From' date cannot be after the 'To' date.");
+        return;
+        }
+    } else if (selectedFilter !== "all") {
+        if (filterValue.value.trim() === "") {
+            alert("Please enter a value to search.");
+            return;
+        }
+    }
+    listFavorites();
+});
+
+async function listFavorites() {
+    let url = "http://localhost:8080/saved-songs"
+
+    if(selectedFilter !== "all" && selectedFilter != "dateRange") {
+        url += `?${selectedFilter}=${encodeURIComponent(filterValue.value)}`;
+    } else if(selectedFilter === "dateRange") {
+        const from = filterValueFrom.value;
+        const to = filterValueTo.value;
+        url += `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+    }
+
     try{
         const token = localStorage.getItem("token");
 
@@ -22,14 +84,44 @@ async function listFavorites() {
         if(!response.ok) {
             throw new Error(`Server error: ${response.status}`);
         }
-
         const favoritesSaved = await response.json();
         console.log(favoritesSaved);
 
         document.getElementById("favorites").innerHTML="";
 
         favoritesSaved.forEach(item => {
-            const artistCard = document.createElement("div");
+            document.getElementById("favorites").appendChild(createFavoriteCard(item));
+        })
+    } catch(error) {
+        console.error("Error loading favorites:", error);
+    }
+}
+
+document.getElementById("saveNote-btn").addEventListener("click", async function() {
+    const token = localStorage.getItem("token");
+    const newNote = document.getElementById("noteInput").value;
+
+    const response = await fetch(`http://localhost:8080/saved-songs/${selectedSavedSongId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            note: newNote
+        })
+    });
+
+    if(response.ok) {
+        bootstrap.Modal.getInstance(document.getElementById("modalNote")).hide();
+        listFavorites();
+    } else {
+        alert("Error updating note");
+    }
+});
+
+function createFavoriteCard(item) { 
+    const artistCard = document.createElement("div");
             artistCard.className = "col-md-3 mb-4";
             artistCard.innerHTML = `
             <div class="card h-100">
@@ -69,47 +161,62 @@ async function listFavorites() {
                     method: "DELETE",
                     headers: {
                         "Authorization": "Bearer " + token 
-                    }
-                
+                    }    
             });
             if(response.ok) {
                 listFavorites();
             }
         }
     });
-    
     const btnContainer = document.createElement("div");
     btnContainer.className = "d-flex justify-content-between mt-auto flex-wrap gap-1"
     btnContainer.appendChild(viewNote);
     btnContainer.appendChild(deleteFavBtn);
     artistCard.querySelector(".card-body").appendChild(btnContainer);
-    document.getElementById("favorites").appendChild(artistCard);
-});
 
-    } catch(error) {
-        console.error("Error loading favorites:", error);
-    }
+    return artistCard;
 }
 
-document.getElementById("saveNote-btn").addEventListener("click", async function() {
-    const token = localStorage.getItem("token");
-    const newNote = document.getElementById("noteInput").value;
+function showTextInput(placeholder) {
+    filterValue.style.display = "inline-block";
+    filterValue.disabled = false;
+    filterValue.type = "text";
+    filterValue.placeholder = placeholder;
 
-    const response = await fetch(`http://localhost:8080/saved-songs/${selectedSavedSongId}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({
-            note: newNote
-        })
-    });
+    filterValueFrom.style.display = "none";
+    filterValueTo.style.display = "none";
+    filterValueFrom.disabled = true;
+    filterValueTo.disabled = true;
+}
 
-    if(response.ok) {
-        bootstrap.Modal.getInstance(document.getElementById("modalNote")).hide();
-        listFavorites();
-    } else {
-        alert("Error updating note");
-    }
-});
+function showDateInputs() {
+    filterValue.style.display = "none";
+    filterValue.disabled = true;
+
+    filterValueFrom.type = "date";
+    filterValueTo.type = "date";
+
+    filterValueFrom.style.display = "inline-block";
+    filterValueTo.style.display = "inline-block";
+    filterValueFrom.disabled = false;
+    filterValueTo.disabled = false;
+}
+
+function hideAllInputs() {
+    filterValue.style.display = "none";
+    filterValue.disabled = true;
+
+    filterValueFrom.type = "date";
+    filterValueTo.type = "date";
+
+    filterValueFrom.style.display = "none";
+    filterValueTo.style.display = "none";
+    filterValueFrom.disabled = true;
+    filterValueTo.disabled = true;
+}
+
+function clearFilters() {
+    filterValue.value = "";
+    filterValueFrom.value = "";
+    filterValueTo.value = "";
+}

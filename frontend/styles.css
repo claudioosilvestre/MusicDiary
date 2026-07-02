@@ -457,3 +457,45 @@
     display: block;
     margin-bottom: 0.5rem;
 }
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 30px auto;
+}
+
+.filter-label {
+    color: #6c63ff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-right: 8px;
+}
+
+#filter-category,
+#filterValue,
+#filterValueFrom,
+#filterValueTo {
+    background-color: #1a1a2e;
+    color: white;
+    border: 1px solid rgba(108,99,255,0.4);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+#filter-category:focus,
+#filterValue:focus,
+#filterValueFrom:focus,
+#filterValueTo:focus {
+    outline: none;
+    border-color: #6c63ff;
+    box-shadow: 0 0 8px rgba(108,99,255,0.3);
+}
+
+#filterValue,
+#filterValueFrom,
+#filterValueTo {
+    width: 220px;
+}
