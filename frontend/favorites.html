@@ -22,7 +22,21 @@
     </nav>
 
     <div class="container mt-4 text-center">
-        <h1 class="hero-title">Your Music Collection 🎵</h1>
+        <h1 class="hero-title">Your Music Collection</h1>
+    </div>
+
+    <div class="filter-container">
+        <label for="filter-category" class="filter-label"></label>Filter by:</label>
+        <select id="filter-category" class="form-select w-auto">
+            <option value="all">All</option>
+            <option value="title">Song Title</option>
+            <option value="artistName">Artists</option>
+            <option value="dateRange">Date Range</option>
+        </select>
+        <input id="filterValue" class="form-control" type="text" placeholder="Filter value">
+        <input id="filterValueFrom" class="form-control" type="date">
+        <input id="filterValueTo" class="form-control" type="date">
+        <button id="search-Filter-Btn" class="btn btn-primary">Search</button>
     </div>
 
     <div id="favorites" class="row mt-4 container mx-auto"></div>
