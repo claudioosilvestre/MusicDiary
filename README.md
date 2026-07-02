@@ -1,6 +1,6 @@
 # MusicDiary 
 
-**MusicDiary** is a full-stack music discovery and journaling platform where users can search for artists and tracks, save their favorites, and build a personal music history. The application integrates with the Last.fm API to provide rich music data, and features a secure authentication system with JWT tokens.
+**MusicDiary** is a full-stack music discovery and journaling platform where users can search for artists and tracks, save their favorites, organize their music history with filters, attach personal notes to each saved song, and build a personal music history. The application integrates with the Last.fm API to provide rich music data, and features a secure authentication system with JWT tokens.
 
 This project was developed as a portfolio project following the completion of a 26-week Software Engineering intensive program at Code for All_, consolidating skills in full-stack architecture, REST API integration, and security.
 
@@ -81,8 +81,9 @@ Open `frontend/index.html` with Live Server or your preferred method.
 - **Track Search:** Search for tracks by name with artist information and listener statistics.
 - **Favorites System:** Save artists and tracks to a personal favorites list with timestamps.
 - **Music History:** View all saved favorites in a dedicated history page.
-- **Modern UI:** Dark-themed responsive interface built with Bootstrap 5 and custom CSS.
+- **Advanced Filtering:** Filter your saved songs by title, artist name, or a custom date range to quickly find entries in your music diary.
 - **Personal Notes:** Add and edit personal notes to saved favorites, with a modal interface and character limit.
+- **Modern UI:** Dark-themed responsive interface built with Bootstrap 5 and custom CSS.
 
 ## Technical Highlights
 
