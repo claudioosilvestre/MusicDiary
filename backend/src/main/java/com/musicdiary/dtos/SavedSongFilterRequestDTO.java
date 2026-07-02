@@ -1,6 +1,6 @@
 package com.musicdiary.dtos;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class SavedSongFilterRequestDTO {
 
@@ -8,11 +8,10 @@ public class SavedSongFilterRequestDTO {
 
     private String title;
 
-    private LocalDateTime from;
+    private LocalDate from;
 
-    private LocalDateTime to;
-
-
+    private LocalDate to;
+    
     public String getArtistName() {
         return artistName;
     }
@@ -29,19 +28,19 @@ public class SavedSongFilterRequestDTO {
         this.title = title;
     }
 
-    public LocalDateTime getFrom() {
+    public LocalDate getFrom() {
         return from;
     }
 
-    public void setFrom(LocalDateTime from) {
+    public void setFrom(LocalDate from) {
         this.from = from;
     }
 
-    public LocalDateTime getTo() {
+    public LocalDate getTo() {
         return to;
     }
 
-    public void setTo(LocalDateTime to) {
+    public void setTo(LocalDate to) {
         this.to = to;
     }
 }

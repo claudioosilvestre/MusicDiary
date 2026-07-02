@@ -1,5 +1,6 @@
 package com.musicdiary.dtos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class SaveSongResponseDTO {
@@ -14,7 +15,7 @@ public class SaveSongResponseDTO {
 
     private String lastFmUrl;
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     private String note;
 
@@ -25,7 +26,6 @@ public class SaveSongResponseDTO {
     public void setNote(String note) {
         this.note = note;
     }
-
 
     public Long getId() {
         return id;
@@ -67,11 +67,11 @@ public class SaveSongResponseDTO {
         this.lastFmUrl = lastFmUrl;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 }

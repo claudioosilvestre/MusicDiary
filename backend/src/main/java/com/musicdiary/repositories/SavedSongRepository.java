@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -24,7 +24,7 @@ public interface SavedSongRepository extends JpaRepository<SavedSong, Long> {
 
     List<SavedSong> findByUserAndSongTitle(User user, String songTitle);
 
-    List<SavedSong> findByUserAndCreatedAtBetween(User user, LocalDateTime from, LocalDateTime to);
+    List<SavedSong> findByUserAndCreatedAtBetween(User user, LocalDate from, LocalDate to);
 
     Long countByUser(User user);
 

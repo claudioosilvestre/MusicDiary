@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,8 +39,8 @@ public class SavedSongController {
     public ResponseEntity<List<SaveSongResponseDTO>> getSavedSongs(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String artistName,
-            @RequestParam(required = false) LocalDateTime from,
-            @RequestParam(required = false) LocalDateTime to
+            @RequestParam(required = false) LocalDate from,
+            @RequestParam(required = false) LocalDate to
             ) {
 
         SavedSongFilterRequestDTO savedSongFilterRequestDTO = new SavedSongFilterRequestDTO();
