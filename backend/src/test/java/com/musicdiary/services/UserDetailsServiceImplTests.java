@@ -39,6 +39,28 @@ public class UserDetailsServiceImplTests {
         verify(userRepository, times(1)).findByEmail("test@email.com");
         assertEquals("test@email.com", userDetails.getUsername());
     }
+
+    @Test
+    void loadUserByUsername_shouldThrowExceptionIfEmailIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userDetailsService.loadUserByUsername(null));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void loadUserByUsername_shouldThrowExceptionIfEmailIsEmpty() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userDetailsService.loadUserByUsername(""));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+
     
      @Test
     void loadUserByUsername_withInvalidData_shouldThrowException() {

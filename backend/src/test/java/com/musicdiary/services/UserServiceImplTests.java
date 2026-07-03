@@ -72,6 +72,26 @@ public class UserServiceImplTests {
     }
 
     @Test
+    void getUser_shouldThrowExceptionIfEmailIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.getUser(null));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void getUser_shouldThrowExceptionIfEmailIsEmpty() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.getUser(null));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
     void getUser_shouldThrowExceptionIfUserNotFound() {
 
         when(userRepository.findByEmail("mail@mail.com")).thenReturn(Optional.empty());
@@ -123,6 +143,40 @@ public class UserServiceImplTests {
     }
 
     @Test
+    void updateProfile_shouldThrowExceptionIfEmailIsNull() {
+
+        UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.updateProfile(null, userUpdateRequestDTO));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void updateProfile_shouldThrowExceptionIfEmailIsBlank() {
+
+        UserUpdateRequestDTO userUpdateRequestDTO = new UserUpdateRequestDTO();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.updateProfile("", userUpdateRequestDTO));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void updateProfile_shouldThrowExceptionIfUserUpdateRequestDTOIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.updateProfile("test@mail.com", null));
+
+        assertEquals("UserUpdateRequest must be valid", exception.getMessage());
+    }
+
+    @Test
     void updateProfile_shouldReturnExceptionIfUserNotFound() {
 
         when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.empty());
@@ -164,6 +218,40 @@ public class UserServiceImplTests {
         userService.changePassword("test@mail.com", changePasswordRequestDTO);
 
         assertEquals("passwordEncoded12345", user.getPasswordHash());
+    }
+
+    @Test
+    void changePassword_shouldThrowExceptionIfEmailIsNull() {
+
+        ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.changePassword(null, changePasswordRequestDTO));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void changePassword_shouldThrowExceptionIfEmailIsEmpty() {
+
+        ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.changePassword("", changePasswordRequestDTO));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void changePassword_shouldThrowExceptionIfChangePasswordRequestDTOIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.changePassword("test@mail.com", null));
+
+        assertEquals("ChangePasswordRequest must be valid", exception.getMessage());
     }
 
     @Test
@@ -242,6 +330,26 @@ public class UserServiceImplTests {
 
         verify(userRepository, times(1)).findByEmail("test@mail.com");
         verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    void deleteAccount_shouldThrowExceptionIfEmailIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.deleteAccount(null));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void deleteAccount_shouldThrowExceptionIfEmailIsEmpty() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.deleteAccount(""));
+
+        assertEquals("Email must be valid", exception.getMessage());
     }
 
     @Test
