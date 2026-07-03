@@ -1,6 +1,7 @@
 package com.musicdiary.services;
 
 import com.musicdiary.dtos.DashboardResponseDTO;
+import com.musicdiary.exceptions.UserNotFoundException;
 import com.musicdiary.models.SavedSong;
 import com.musicdiary.models.Song;
 import com.musicdiary.models.User;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +115,53 @@ public class DashboardServiceImplTests {
         verify(savedSongRepository, times(1)).findArtistCountsByUser(user);
         verify(savedSongRepository, times(1)).findMonthlyCountsByUser(user);
         verify(savedSongRepository, times(1)).findFirstByUserOrderByCreatedAtDesc(user);
+    }
+
+    @Test
+    void getDashboard_shouldThrowExceptionIfEmailIsInvalid() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> dashboardService.getDashboard(null));
+
+        assertEquals("Email must be valid", exception.getMessage());
+    }
+
+    @Test
+    void getDashboard_shouldThrowExceptionIfUserNotFound() {
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.empty());
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> dashboardService.getDashboard("test@mail.com"));
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@mail.com");
+    }
+
+    @Test
+    void getDashboard_shouldReturnDashboardWithEmptyStatisticsWhenUserHasNoSavedSongs() {
+
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@mail.com");
+
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
+        when(savedSongRepository.countByUser(user)).thenReturn(0L);
+
+        when(savedSongRepository.findArtistCountsByUser(user)).thenReturn(Collections.emptyList());
+        when(savedSongRepository.findFirstByUserOrderByCreatedAtDesc(user)).thenReturn(null);
+
+        when(savedSongRepository.findMonthlyCountsByUser(user)).thenReturn(Collections.emptyList());
+
+        DashboardResponseDTO result = dashboardService.getDashboard("test@mail.com");
+
+        assertEquals(0L, result.getTotalMusicsSaved());
+        assertNull(result.getMostSavedArtist());
+        assertEquals(0L, result.getTimesOfMostSavedArtist());
+        assertNull(result.getLastSavedSong());
+        assertTrue(result.getMonthCountList().isEmpty());
     }
 
 }
