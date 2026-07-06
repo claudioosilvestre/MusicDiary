@@ -4,6 +4,7 @@ import com.musicdiary.dtos.EditNoteRequestDTO;
 import com.musicdiary.dtos.SaveSongRequestDTO;
 import com.musicdiary.dtos.SaveSongResponseDTO;
 import com.musicdiary.dtos.SavedSongFilterRequestDTO;
+import com.musicdiary.exceptions.InvalidUserException;
 import com.musicdiary.exceptions.SavedSongNotFoundException;
 import com.musicdiary.exceptions.SongAlreadySavedException;
 import com.musicdiary.exceptions.UserNotFoundException;
@@ -153,6 +154,46 @@ public class SavedSongServiceImplTests {
         assertEquals("test",result.get(0).getTitle());
         verify(savedSongRepository).findByUserAndSongArtistName(user, "testName");
     }
+
+    @Test
+    void listByArtist_shouldThrowExceptionIfArtistNameIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> savedSongServiceImpl.listByArtist(null));
+
+        assertEquals("Artist name must be valid", exception.getMessage());
+    }
+
+    @Test
+    void listByArtist_shouldThrowExceptionIfArtistNameIsEmpty() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> savedSongServiceImpl.listByArtist(""));
+
+        assertEquals("Artist name must be valid", exception.getMessage());
+    }
+
+    @Test
+    void listByArtist_shouldThrowExceptionIfUserNotFound() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.empty());
+
+        UsernameNotFoundException exception = assertThrows(
+                UsernameNotFoundException.class,
+                () -> savedSongServiceImpl.listByArtist("test@email.com"));
+
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        assertEquals("User not found", exception.getMessage());
+    }
+
 
     @Test
     void getSavedSongs_shouldThrowExceptionIfSaveSongFilterRequestDTOIsNull() {
@@ -323,59 +364,6 @@ public class SavedSongServiceImplTests {
     }
 
     @Test
-    void deleteSong_shouldDeleteSong_withValidId() {
-
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("test@email.com");
-        SecurityContextHolder.setContext(securityContext);
-
-        User user = new User();
-        user.setEmail("test@email.com");
-        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
-
-        Song song = new Song();
-        song.setTitle("Test");
-        song.setArtistName("TestArtist");
-
-        SavedSong savedSong = new SavedSong();
-        savedSong.setId(1L);
-        savedSong.setUser(user);
-        savedSong.setSong(song);
-
-        when(savedSongRepository.findById(1L)).thenReturn(Optional.of(savedSong));
-
-        savedSongServiceImpl.deleteSong(1L);
-
-        verify(savedSongRepository, times(1)).delete(savedSong);
-    }
-
-    @Test
-    void deleteSong_shouldThrowException_withInvalidId () {
-
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("test@email.com");
-        SecurityContextHolder.setContext(securityContext);
-
-        User user = new User();
-        user.setEmail("test@email.com");
-        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
-
-        when(savedSongRepository.findById(1L)).thenReturn(Optional.empty());
-
-        SavedSongNotFoundException exception = assertThrows(
-                SavedSongNotFoundException.class,
-                () -> savedSongServiceImpl.deleteSong(1L));
-
-        assertEquals("Saved song not found", exception.getMessage());
-
-        verify(savedSongRepository).findById(1L);
-    }
-
-    @Test
     void editNoteWithValidData_shouldReturnSaveSongResponseDTO() {
 
         Song song = new Song();
@@ -412,6 +400,16 @@ public class SavedSongServiceImplTests {
     }
 
     @Test
+    void editNote_shouldThrowExceptionIfEditNoteRequestDTOIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> savedSongServiceImpl.editNote(1L, null));
+
+        assertEquals("EditNoteRequest must be valid", exception.getMessage());
+    }
+
+    @Test
     void editNoteWithNonExistentSong_shouldThrowException() {
 
         EditNoteRequestDTO editNoteRequestDTO = new EditNoteRequestDTO();
@@ -425,4 +423,122 @@ public class SavedSongServiceImplTests {
 
         assertEquals("Saved song not found", exception.getMessage());
     }
+
+    @Test
+    void deleteSong_shouldDeleteSong_withValidId() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+
+        Song song = new Song();
+        song.setTitle("Test");
+        song.setArtistName("TestArtist");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setId(1L);
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        when(savedSongRepository.findById(1L)).thenReturn(Optional.of(savedSong));
+
+        savedSongServiceImpl.deleteSong(1L);
+
+        verify(savedSongRepository, times(1)).delete(savedSong);
+    }
+
+    @Test
+    void deleteSong_shouldThrowExceptionIfIdIsNotPositive() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> savedSongServiceImpl.deleteSong(0L));
+
+        assertEquals("Id must be positive", exception.getMessage());
+    }
+
+    @Test
+    void deleteSong_shouldThrowExceptionIfUserNotFound() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.empty());
+
+        UsernameNotFoundException exception = assertThrows(
+                UsernameNotFoundException.class,
+                () -> savedSongServiceImpl.deleteSong(1L));
+
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+    }
+
+    @Test
+    void deleteSong_shouldThrowException_withInvalidId () {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+
+        when(savedSongRepository.findById(1L)).thenReturn(Optional.empty());
+
+        SavedSongNotFoundException exception = assertThrows(
+                SavedSongNotFoundException.class,
+                () -> savedSongServiceImpl.deleteSong(1L));
+
+        assertEquals("Saved song not found", exception.getMessage());
+
+        verify(savedSongRepository).findById(1L);
+    }
+
+    @Test
+    void deleteSong_shouldThrowExceptionIfUserDoesNotMatchWithSavedSongUser() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        user.setId(1L);
+
+        Song song = new Song();
+        song.setId(1L);
+        song.setTitle("test");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setId(2L);
+        savedSong.setSong(song);
+        savedSong.setUser(new User());
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(savedSongRepository.findById(2L)).thenReturn(Optional.of(savedSong));
+
+        InvalidUserException exception = assertThrows(
+                InvalidUserException.class,
+                () -> savedSongServiceImpl.deleteSong(2L));
+
+        assertEquals("Invalid user", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        verify(savedSongRepository, times(1)).findById(2L);
+    }
+
+
 }
