@@ -19,11 +19,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +37,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SavedSongServiceImplTests {
 
+    private static final Logger log = LoggerFactory.getLogger(SavedSongServiceImplTests.class);
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -192,6 +196,147 @@ public class SavedSongServiceImplTests {
 
         verify(userRepository, times(1)).findByEmail("test@email.com");
         assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void getSavedSongs_withNoSongsSaved_shouldReturnListOfSaveSongResponseDTO() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        SavedSongFilterRequestDTO savedSongFilterRequestDTO = new SavedSongFilterRequestDTO();
+
+        User user = new User();
+        user.setEmail("test@email.com");
+        user.setId(1L);
+
+        List<SavedSong> list = new ArrayList<>();
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(savedSongRepository.findByUserOrderByCreatedAtDesc(user)).thenReturn(list);
+
+        List<SaveSongResponseDTO> result = savedSongServiceImpl.getSavedSongs(savedSongFilterRequestDTO);
+
+        assertNotNull(result);
+        assertEquals(0, result.size());
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        verify(savedSongRepository, times(1)).findByUserOrderByCreatedAtDesc(user);
+    }
+
+    @Test
+    void getSavedSong_ByTitle_shouldReturnListOfSaveSongResponseDTO() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        SavedSongFilterRequestDTO savedSongFilterRequestDTO = new SavedSongFilterRequestDTO();
+        savedSongFilterRequestDTO.setTitle("test");
+
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@email.com");
+
+        Song song = new Song();
+        song.setTitle("test");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        List<SavedSong> list = new ArrayList<>();
+        list.add(savedSong);
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(savedSongRepository.findByUserAndSongTitle(user, savedSongFilterRequestDTO.getTitle())).thenReturn(list);
+
+        List<SaveSongResponseDTO> result = savedSongServiceImpl.getSavedSongs(savedSongFilterRequestDTO);
+
+        assertNotNull(result);
+        assertEquals("test", result.get(0).getTitle());
+        assertEquals(1, result.size());
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        verify(savedSongRepository, times(1)).findByUserAndSongTitle(user, savedSongFilterRequestDTO.getTitle());
+    }
+
+    @Test
+    void getSavedSong_ByArtistName_shouldReturnListOfSaveSongResponseDTO() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        SavedSongFilterRequestDTO savedSongFilterRequestDTO = new SavedSongFilterRequestDTO();
+        savedSongFilterRequestDTO.setArtistName("test");
+
+        User user = new User();
+        user.setEmail("test@email.com");
+
+        Song song = new Song();
+        song.setArtistName("test");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        List<SavedSong> list = new ArrayList<>();
+        list.add(savedSong);
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(savedSongRepository.findByUserAndSongArtistName(user, savedSongFilterRequestDTO.getArtistName())).thenReturn(list);
+
+        List<SaveSongResponseDTO> result = savedSongServiceImpl.getSavedSongs(savedSongFilterRequestDTO);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("test", result.get(0).getArtistName());
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        verify(savedSongRepository, times(1)).findByUserAndSongArtistName(user, savedSongFilterRequestDTO.getArtistName());
+    }
+
+    @Test
+    void getSavedSong_ByDate_shouldReturnListOfSaveSongResponseDTO() {
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("test@email.com");
+        SecurityContextHolder.setContext(securityContext);
+
+        SavedSongFilterRequestDTO savedSongFilterRequestDTO = new SavedSongFilterRequestDTO();
+        savedSongFilterRequestDTO.setFrom(LocalDate.of(2026, 01, 01));
+        savedSongFilterRequestDTO.setTo(LocalDate.of(2026, 05, 01));
+
+        User user = new User();
+        user.setEmail("test@email.com");
+
+        Song song = new Song();
+        song.setTitle("test");
+
+        SavedSong savedSong = new SavedSong();
+        savedSong.setUser(user);
+        savedSong.setSong(song);
+
+        List<SavedSong> list = new ArrayList<>();
+        list.add(savedSong);
+
+        when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
+        when(savedSongRepository.findByUserAndCreatedAtBetween(user, savedSongFilterRequestDTO.getFrom(), savedSongFilterRequestDTO.getTo())).thenReturn(list);
+
+        List<SaveSongResponseDTO> result = savedSongServiceImpl.getSavedSongs(savedSongFilterRequestDTO);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("test", result.get(0).getTitle());
+        verify(userRepository, times(1)).findByEmail("test@email.com");
+        verify(savedSongRepository, times(1)).findByUserAndCreatedAtBetween(user, savedSongFilterRequestDTO.getFrom(), savedSongFilterRequestDTO.getTo());
     }
 
 
