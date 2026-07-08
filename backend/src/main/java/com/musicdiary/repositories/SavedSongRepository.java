@@ -35,5 +35,4 @@ public interface SavedSongRepository extends JpaRepository<SavedSong, Long> {
 
     @Query("SELECT YEAR(ss.createdAt), MONTH(ss.createdAt), COUNT(ss) FROM SavedSong ss WHERE ss.user = :user GROUP BY YEAR(ss.createdAt), MONTH(ss.createdAt) ORDER BY YEAR(ss.createdAt) ASC, MONTH(ss.createdAt) ASC")
     List<MonthlyCountProjection> findMonthlyCountsByUser(@Param("user") User user);
-
 }

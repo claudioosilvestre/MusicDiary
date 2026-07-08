@@ -13,5 +13,4 @@ public class LastFmConfig {
                 .baseUrl("http://ws.audioscrobbler.com/2.0")
                 .build();
     }
-
 }

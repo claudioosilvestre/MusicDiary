@@ -10,7 +10,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceImplTests {
 
@@ -33,7 +32,6 @@ public class JwtServiceImplTests {
 
         assertNotNull(token);
     }
-
 
     @Test
     void extractEmailWithValidToken_shouldReturnEmail() {

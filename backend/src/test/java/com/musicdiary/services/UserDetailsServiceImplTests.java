@@ -59,8 +59,6 @@ public class UserDetailsServiceImplTests {
 
         assertEquals("Email must be valid", exception.getMessage());
     }
-
-
     
      @Test
     void loadUserByUsername_withInvalidData_shouldThrowException() {
