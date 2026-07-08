@@ -64,7 +64,6 @@ public class SavedSongServiceImplTests {
 
         assertNotNull(saveSongResponse);
         assertEquals(0, saveSongResponse.size());
-
     }
 
     @Test
@@ -336,7 +335,6 @@ public class SavedSongServiceImplTests {
         verify(savedSongRepository, times(1)).findByUserAndCreatedAtBetween(user, savedSongFilterRequestDTO.getFrom(), savedSongFilterRequestDTO.getTo());
     }
 
-
     @Test
     void getSavedSongs_shouldThrowExceptionIfSaveSongFilterRequestDTOIsNull() {
 
@@ -525,7 +523,6 @@ public class SavedSongServiceImplTests {
 
         assertNotNull(songResponseDTO);
         assertEquals("TestNote", songResponseDTO.getNote());
-
     }
 
     @Test
@@ -625,7 +622,7 @@ public class SavedSongServiceImplTests {
     }
 
     @Test
-    void deleteSong_shouldThrowException_withInvalidId () {
+    void deleteSong_shouldThrowException_ifSongNotFound () {
 
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -681,6 +678,4 @@ public class SavedSongServiceImplTests {
         verify(userRepository, times(1)).findByEmail("test@email.com");
         verify(savedSongRepository, times(1)).findById(2L);
     }
-
-
 }

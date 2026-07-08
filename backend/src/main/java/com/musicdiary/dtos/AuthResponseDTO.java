@@ -4,7 +4,6 @@ public class AuthResponseDTO {
 
     private String token;
 
-
     public String getToken() {
         return token;
     }

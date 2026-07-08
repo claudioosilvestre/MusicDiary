@@ -36,7 +36,6 @@ public class UserServiceImplTests {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-
     @Test
     void getUser_shouldReturnUserUpdateResponseDTO() {
 
@@ -46,8 +45,7 @@ public class UserServiceImplTests {
         user.setFirstName("test");
         user.setLastName("test1");
         user.setBirthDate(LocalDate.of(2026, 10, 20));
-
-
+        
         when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(user));
 
         UserUpdateResponseDTO userUpdateResponseDTO = new UserUpdateResponseDTO();
@@ -365,5 +363,4 @@ public class UserServiceImplTests {
         verify(userRepository, times(1)).findByEmail("test@mail.com");
         verify(userRepository, never()).delete(any());
     }
-
 }

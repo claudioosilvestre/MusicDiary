@@ -43,7 +43,6 @@ public class LastFmServiceImplTests {
         ReflectionTestUtils.setField(lastFmService, "apiKey", "test-api-key");
     }
 
-
     @Test
     void searchArtistWithValidData_shouldReturnArtistsList() {
 

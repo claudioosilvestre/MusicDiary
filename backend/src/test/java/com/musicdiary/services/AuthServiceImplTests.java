@@ -21,7 +21,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceImplTests {
 
@@ -36,7 +35,6 @@ public class AuthServiceImplTests {
 
     @InjectMocks
     private AuthServiceImpl authService;
-
 
     @Test
     void registerWithValidData_shouldReturnGeneratedToken() {

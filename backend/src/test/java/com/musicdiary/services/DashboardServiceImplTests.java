@@ -35,7 +35,6 @@ public class DashboardServiceImplTests {
     @Mock
     private UserRepository userRepository;
 
-
     @Test
     void getDashboard_shouldReturnDashboardResponseDTO () {
 
@@ -163,5 +162,4 @@ public class DashboardServiceImplTests {
         assertNull(result.getLastSavedSong());
         assertTrue(result.getMonthCountList().isEmpty());
     }
-
 }

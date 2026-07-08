@@ -26,11 +26,9 @@ public class SavedSong {
     @CreationTimestamp
     private LocalDate createdAt;
 
-
     public SavedSong() {
 
     }
-
 
     public Song getSong() {
         return song;
