@@ -46,12 +46,15 @@ async function loadDashboard() {
         }]
     },
     options: {
+        maintainAspectRatio: false,
         scales: {
             x: {
                 ticks: { color: "#ffffff" }
             },
             y: {
-                ticks: { color: "#ffffff" }
+                ticks: { color: "#ffffff",
+                stepSize: 1,
+                }
             }
         },
         plugins: {

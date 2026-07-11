@@ -1,7 +1,7 @@
-listFavorites();
-
 let selectedSavedSongId = null;
 let selectedFilter = "all";
+
+listFavorites();
 
 const filterDropdown = document.getElementById("filter-category");
 const filterValue = document.getElementById("filterValue");
@@ -62,7 +62,7 @@ searchFilterBtn.addEventListener("click", function() {
 });
 
 async function listFavorites() {
-    let url = "http://localhost:8080/saved-songs"
+    let url = "http://localhost:8080/saved-songs/filter"
 
     if(selectedFilter !== "all" && selectedFilter != "dateRange") {
         url += `?${selectedFilter}=${encodeURIComponent(filterValue.value)}`;
