@@ -145,14 +145,14 @@ public class SavedSongServiceImplTests {
         List<SavedSong> savedSongList = new ArrayList<>();
         savedSongList.add(savedSong);
 
-        when(savedSongRepository.findByUserAndSongArtistName(user, "testName")).thenReturn(savedSongList);
+        when(savedSongRepository.findByUserAndSongArtistNameIgnoreCase(user, "testName")).thenReturn(savedSongList);
 
         List<SaveSongResponseDTO> result = savedSongServiceImpl.listByArtist("testName");
 
         assertEquals(1, result.size());
         assertEquals("testName",result.get(0).getArtistName());
         assertEquals("test",result.get(0).getTitle());
-        verify(savedSongRepository).findByUserAndSongArtistName(user, "testName");
+        verify(savedSongRepository).findByUserAndSongArtistNameIgnoreCase(user, "testName");
     }
 
     @Test
@@ -249,7 +249,7 @@ public class SavedSongServiceImplTests {
         list.add(savedSong);
 
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
-        when(savedSongRepository.findByUserAndSongTitle(user, savedSongFilterRequestDTO.getTitle())).thenReturn(list);
+        when(savedSongRepository.findByUserAndSongTitleIgnoreCase(user, savedSongFilterRequestDTO.getTitle())).thenReturn(list);
 
         List<SaveSongResponseDTO> result = savedSongServiceImpl.getSavedSongs(savedSongFilterRequestDTO);
 
@@ -257,7 +257,7 @@ public class SavedSongServiceImplTests {
         assertEquals("test", result.get(0).getTitle());
         assertEquals(1, result.size());
         verify(userRepository, times(1)).findByEmail("test@email.com");
-        verify(savedSongRepository, times(1)).findByUserAndSongTitle(user, savedSongFilterRequestDTO.getTitle());
+        verify(savedSongRepository, times(1)).findByUserAndSongTitleIgnoreCase(user, savedSongFilterRequestDTO.getTitle());
     }
 
     @Test
@@ -286,7 +286,7 @@ public class SavedSongServiceImplTests {
         list.add(savedSong);
 
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
-        when(savedSongRepository.findByUserAndSongArtistName(user, savedSongFilterRequestDTO.getArtistName())).thenReturn(list);
+        when(savedSongRepository.findByUserAndSongArtistNameIgnoreCase(user, savedSongFilterRequestDTO.getArtistName())).thenReturn(list);
 
         List<SaveSongResponseDTO> result = savedSongServiceImpl.getSavedSongs(savedSongFilterRequestDTO);
 
@@ -294,7 +294,7 @@ public class SavedSongServiceImplTests {
         assertEquals(1, result.size());
         assertEquals("test", result.get(0).getArtistName());
         verify(userRepository, times(1)).findByEmail("test@email.com");
-        verify(savedSongRepository, times(1)).findByUserAndSongArtistName(user, savedSongFilterRequestDTO.getArtistName());
+        verify(savedSongRepository, times(1)).findByUserAndSongArtistNameIgnoreCase(user, savedSongFilterRequestDTO.getArtistName());
     }
 
     @Test

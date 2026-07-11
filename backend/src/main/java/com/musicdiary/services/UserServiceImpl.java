@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteAccount(String email) {
-        if(email == null || email.isBlank) {
+        if(email == null || email.isBlank()) {
             throw new IllegalArgumentException("Email must be valid");
         }
 

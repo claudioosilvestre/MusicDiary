@@ -20,19 +20,19 @@ public interface SavedSongRepository extends JpaRepository<SavedSong, Long> {
 
     List<SavedSong> findByUserOrderByCreatedAtDesc(User user);
 
-    List<SavedSong> findByUserAndSongArtistName(User user, String artistName);
+    List<SavedSong> findByUserAndSongArtistNameIgnoreCase(User user, String artistName);
 
-    List<SavedSong> findByUserAndSongTitle(User user, String songTitle);
+    List<SavedSong> findByUserAndSongTitleIgnoreCase(User user, String songTitle);
 
     List<SavedSong> findByUserAndCreatedAtBetween(User user, LocalDate from, LocalDate to);
 
     Long countByUser(User user);
 
-    @Query("SELECT ss.song.artistName, COUNT(ss) FROM SavedSong ss WHERE ss.user = :user GROUP BY ss.song.artistName ORDER BY COUNT(ss) DESC")
+    @Query("SELECT ss.song.artistName AS artistName, COUNT(ss) AS count FROM SavedSong ss WHERE ss.user = :user GROUP BY ss.song.artistName ORDER BY COUNT(ss) DESC")
     List<ArtistCount> findArtistCountsByUser(@Param("user") User user);
 
     SavedSong findFirstByUserOrderByCreatedAtDesc(User user);
 
-    @Query("SELECT YEAR(ss.createdAt), MONTH(ss.createdAt), COUNT(ss) FROM SavedSong ss WHERE ss.user = :user GROUP BY YEAR(ss.createdAt), MONTH(ss.createdAt) ORDER BY YEAR(ss.createdAt) ASC, MONTH(ss.createdAt) ASC")
+    @Query("SELECT YEAR(ss.createdAt) AS year, MONTH(ss.createdAt) AS month, COUNT(ss) AS count FROM SavedSong ss WHERE ss.user = :user GROUP BY YEAR(ss.createdAt), MONTH(ss.createdAt) ORDER BY YEAR(ss.createdAt) ASC, MONTH(ss.createdAt) ASC")
     List<MonthlyCountProjection> findMonthlyCountsByUser(@Param("user") User user);
 }

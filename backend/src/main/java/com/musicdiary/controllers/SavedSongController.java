@@ -35,7 +35,7 @@ public class SavedSongController {
         return ResponseEntity.ok(savedSongService.listByArtist(artistName));
     }
 
-    @GetMapping
+    @GetMapping("/filter")
     public ResponseEntity<List<SaveSongResponseDTO>> getSavedSongs(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String artistName,

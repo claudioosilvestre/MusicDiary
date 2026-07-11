@@ -70,7 +70,7 @@ public class SavedSongServiceImpl implements SavedSongService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        List<SavedSong> savedSongList = savedSongRepository.findByUserAndSongArtistName(user, artistName);
+        List<SavedSong> savedSongList = savedSongRepository.findByUserAndSongArtistNameIgnoreCase(user, artistName);
 
         List<SaveSongResponseDTO> responses = savedSongList.stream()
                 .map(song -> SavedSongConverter.toResponseDTO(song))
@@ -94,9 +94,9 @@ public class SavedSongServiceImpl implements SavedSongService {
         List<SavedSong> savedSongList = new ArrayList<>();
 
         if(savedSongFilterRequestDTO.getTitle() != null) {
-            savedSongList = savedSongRepository.findByUserAndSongTitle(user, savedSongFilterRequestDTO.getTitle());
+            savedSongList = savedSongRepository.findByUserAndSongTitleIgnoreCase(user, savedSongFilterRequestDTO.getTitle());
         } else if (savedSongFilterRequestDTO.getArtistName() != null) {
-            savedSongList = savedSongRepository.findByUserAndSongArtistName(user, savedSongFilterRequestDTO.getArtistName());
+            savedSongList = savedSongRepository.findByUserAndSongArtistNameIgnoreCase(user, savedSongFilterRequestDTO.getArtistName());
         } else if (savedSongFilterRequestDTO.getFrom() != null || savedSongFilterRequestDTO.getTo() != null) {
             savedSongList = savedSongRepository.findByUserAndCreatedAtBetween(user, savedSongFilterRequestDTO.getFrom(), savedSongFilterRequestDTO.getTo());
         } else {

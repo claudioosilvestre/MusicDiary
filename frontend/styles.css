@@ -499,3 +499,10 @@
 #filterValueTo {
     width: 220px;
 }
+
+.graphic-card {
+    margin-top: 3rem;
+    position: relative;
+    height: 50vh;
+    width: 100%;
+}
